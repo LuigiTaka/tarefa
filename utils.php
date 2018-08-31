@@ -61,12 +61,12 @@ function getRegistro(string $tipo, string $atributo, string $valor) {
        if (array_key_exists($atributo, $json[$i])) {
             if (array_search($valor, $json[$i])) {
                 foreach ($json[$i] as $key => $value) {
-                    var_dump($json[$i]);
+                   #var_dump($json[$i]);
                    return $json[$i];
                 }
             }
         }else{
-            echo "False";
+            #echo "False";
             return false;
         }
     }
