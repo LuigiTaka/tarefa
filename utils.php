@@ -31,8 +31,9 @@ function addRegistro(string $tipo, array $registro){
     $registros[] = $registro;
     $resultado = array_unique($registros, SORT_REGULAR);
 
-    file_put_contents($database_file, json_encode($registros));
+    file_put_contents($database_file, json_encode($registros, JSON_PRETTY_PRINT));
 
+    return $registro['id'];
 
     /*
     fwrite($fp, json_encode($registros));
@@ -45,8 +46,7 @@ function addRegistro(string $tipo, array $registro){
 function getRegistro(string $tipo, string $atributo, string $valor) {
 
     $database = __DIR__."/database";
-
-
+    
     $database_file = $database."/$tipo.json";
 
     $json = [];
