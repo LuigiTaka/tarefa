@@ -57,19 +57,15 @@ function getRegistro(string $tipo, string $atributo, string $valor) {
          $json = json_decode(file_get_contents($database_file),true);
     }
 
+
     for ($i=0; $i < count($json) ; $i++) { 
-       if (array_key_exists($atributo, $json[$i])) {
-            if (array_search($valor, $json[$i])) {
-                foreach ($json[$i] as $key => $value) {
-                   #var_dump($json[$i]);
-                   return $json[$i];
-                }
-            }
-        }else{
-            #echo "False";
-            return false;
+        if (array_search($valor, $json[$i])) {
+            #var_dump($json[$i]);
+            return $json[$i];
         }
     }
+
+    return false;
 
 }
 
