@@ -52,7 +52,7 @@ function getRegistro(string $tipo, string $atributo, string $valor) {
     $json = [];
 
     if (file_exists($database_file)) {
-        $json = json_decode(file_get_contents($database_file), true);
+        $json = json_decode(file_get_contents($database_file, JSON_PRETTY_PRINT), true);
     }
 
     for ($i=0; $i < count($json) ; $i++) { 
@@ -65,3 +65,25 @@ function getRegistro(string $tipo, string $atributo, string $valor) {
 
 }
 
+
+function addLargeText($text){
+
+    $database = __DIR__."/database/textos";
+
+    if (!is_dir($database)) {
+        mkdir($database);
+    }
+
+    $id = uniqid("texto_");
+
+    $database_file = $database."/$id.txt";
+
+    file_put_contents($database_file, $text);
+
+    return $id;
+    
+}
+
+function getLargeText($id){
+   return  file_get_contents(__DIR__."/database/textos/$id.txt");
+}
