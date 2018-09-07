@@ -74,7 +74,7 @@ function addLargeText($text){
         mkdir($database);
     }
 
-    $id = uniqid("texto_");
+    $id = uniqid();
 
     $database_file = $database."/$id.txt";
 
@@ -87,3 +87,6 @@ function addLargeText($text){
 function getLargeText($id){
    return  file_get_contents(__DIR__."/database/textos/$id.txt");
 }
+
+
+
