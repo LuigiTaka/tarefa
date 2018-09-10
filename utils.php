@@ -90,3 +90,19 @@ function getLargeText($id){
 
 
 
+/**
+ * 
+ */
+class Page
+{
+    public $title;
+    public $content;
+
+    public function render(){
+        echo "<title>".$this->title."</title>";
+        echo $this->content;
+
+ 
+    }
+
+}
