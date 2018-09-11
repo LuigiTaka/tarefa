@@ -65,6 +65,20 @@ function getRegistro(string $tipo, string $atributo, string $valor) {
 
 }
 
+function getRegistros(string $tipo){
+
+    $database = __DIR__."/database";
+
+    $database_file = $database."/$tipo.json";
+
+    if(!file_exists($database_file)){
+        return [];
+    }
+
+    return json_decode(file_get_contents($database_file),true);
+
+}
+
 
 function addLargeText($text){
 
@@ -74,7 +88,7 @@ function addLargeText($text){
         mkdir($database);
     }
 
-    $id = uniqid();
+    $id = md5($text);
 
     $database_file = $database."/$id.txt";
 
@@ -99,10 +113,26 @@ class Page
     public $content;
 
     public function render(){
-        echo "<title>".$this->title."</title>";
-        echo $this->content;
+        ?>
+        <!DOCTYPE>
+        <html>
+            <head>
+                <title><?php echo $this->title; ?></title>
+                <meta charset="UTF-8" /> <!-- isso aqui é importante para que as palavras com acento não saiam com pontos de interrogação -->
+            </head>
+            <body>
+                <?php echo $this->content; ?>
+            </body>
+        </html>
+        <?php
+    }
 
- 
+
+    public function __toString()
+    {
+        ob_start();
+        $this->render();
+        return ob_get_clean();
     }
 
 }
