@@ -7,7 +7,7 @@ $file = file_get_contents("http://htput.com/luigi_project/obras?contentType=text
 $array = explode("\r", $file); // divide por quebra de linha
 for ($i=0; $i < count($array) ; $i++) { 
 
-	$array[$i] = explode(';', $array[$i]);
+	$array[$i] = explode(';', trim($array[$i]));
 
 	if(!$a = getRegistro('autores','nome',$array[$i][1])){
 	    $a = ['nome' => $array[$i][1]];

@@ -55,8 +55,10 @@ function getRegistro(string $tipo, string $atributo, string $valor) {
         $json = json_decode(file_get_contents($database_file, JSON_PRETTY_PRINT), true);
     }
 
+    $valor = trim($valor);
+
     for ($i=0; $i < count($json) ; $i++) { 
-        if ($json[$i][$atributo]==$valor) {
+        if (trim($json[$i][$atributo])==$valor) {
             return $json[$i];
         }
     }
