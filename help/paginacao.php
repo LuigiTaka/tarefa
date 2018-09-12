@@ -36,7 +36,7 @@ ob_start();
         Página <?php echo $current; ?> de <?php echo $num_pages ?>
         <a href="?page=<?php echo $current+1; ?>">Próxima &raquo;</a>
     </legend>
-    <?php echo $pages[$current]; ?>
+    <?php echo $pages[$current-1]; ?>
 </fieldset>
 
 <?php
