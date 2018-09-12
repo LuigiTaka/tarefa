@@ -10,7 +10,7 @@ $pages = [];
 $length = strlen($text);
 $page = '';
 
-for($i=1;$i<=$length; $i++){
+for($i=0;$i<$length; $i++){
     $page .= substr($text, $i, 1);
     if(strlen($page)==$chars_per_page){
         $pages[] = $page;
