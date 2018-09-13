@@ -36,60 +36,53 @@ ob_start(); // segura a saída
     </div>
 
     <div id="textReader">
-                <h2><?php echo $titulo; ?> </h2>
-                <p> <?php echo $autor; ?> </p>
-                <hr>
-                <div id="scroll">
-                <?php
-                    if(!empty($_GET['id_obra'])){
-                        $obra = getRegistro('obras','id',$_GET['id_obra']);
-                        $text = getLargeText($obra['id_large_text']);
+        <h2><?php echo $titulo; ?> </h2>
+        <p> <?php echo $autor; ?> </p>
+        <hr>
+        <?php
+            if(!empty($_GET['id_obra'])){
+                $obra = getRegistro('obras','id',$_GET['id_obra']);
+                $text = getLargeText($obra['id_large_text']);
 
-                        $tamanho = strlen($text);
-                        $maxCaracteres = 1000;
-                        $paginas = [];
+                $tamanho = strlen($text);
+                $maxCaracteres = 1000;
+                $paginas = [];
+                $pagina = '';
+                for ($i=0; $i < $tamanho ; $i++) {
+                    $pagina .= substr($text, $i, 1);
+                    if (strlen($pagina) == $maxCaracteres) {
+                        $paginas[] = $pagina;
                         $pagina = '';
-                        for ($i=0; $i < $tamanho ; $i++) { 
-                            $pagina .= substr($text, $i, 1);
-                            if (strlen($pagina) == $maxCaracteres) {
-                                $paginas[] = $pagina;
-                                $pagina = '';
-                            }
-                        }
+                    }
+                }
 
-                        if ($pagina) {
-                            $paginas[] = $pagina;
-                        }
+                if ($pagina) {
+                    $paginas[] = $pagina;
+                }
 
-                        $Npaginas = count($paginas);
-                        
-                        $atual = isset($_GET['page']) ? $_GET['page'] : 1;
-                        if ( $atual < $Npaginas and $atual > 0) {
-                            echo $paginas[$atual-1];
-                        }
-                    }  
-                ?>
-                </div>
-                <div id="bT">
+                $Npaginas = count($paginas);
 
-                <button>
-                    <a href="?id_obra=<?php echo $_GET['id_obra']; ?>&page=<?php echo $atual-1; ?>">
-                    <<<
-                    </a>
-                </button>
+                $atual = isset($_GET['page']) ? $_GET['page'] : 1;
+                $content = "";
+                if ( $atual < $Npaginas and $atual > 0) {
+                    $content = $paginas[$atual-1];
+                }
 
-                <?php echo "Página ".$atual." de" ?>
-                <input type="" name=""disabled value="<?php echo $Npaginas-1 ?>">
+        ?>
+        <div id="scroll">
+            <?php echo $content; ?>
+        </div>
+        <div id="bT">
 
-                <button>
-                    <a href="?id_obra=<?php echo $_GET['id_obra']; ?>&page=<?php echo $atual+1; ?>">
-                        >>> 
-                    </a>
-                </button>
+            <input type="button" onClick="location.href='?id_obra=<?php echo $_GET['id_obra']; ?>&page=<?php echo $atual-1; ?>'" value="<<<" />
 
-                
+            <?php echo "Página ".$atual." de" ?>
+            <input disabled value="<?php echo $Npaginas-1 ?>">
 
-                </div>
+            <input type="button" onClick="location.href='?id_obra=<?php echo $_GET['id_obra']; ?>&page=<?php echo $atual+1; ?>'" value=">>>" />
+
+        </div>
+        <?php } ?>
     </div>
 
      <style>
@@ -109,27 +102,28 @@ ob_start(); // segura a saída
             background:yellow;
         }
 
+        #obrasList{
+            display:inline-block;
+            vertical-align:text-top;
+        }
+
         #textReader {
-            margin-top: -62%;
-            width: 50%;
-            float: right;
+            display:inline-block;
+            vertical-align:text-top;
+            width:500px;
             border: solid 1px black;
             max-height: 60%;
             padding: 25px;
+        }
+
+        #bT{
+            text-align:center;
         }
 
         #bT button,input{
             width: 10%;
             text-align: center;
             margin: 10px;
-        }
-
-        .Left {
-            left: 0px;
-        }
-
-        .Right{
-            float: right;
         }
 
         #textReader h2{
