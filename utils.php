@@ -33,7 +33,7 @@ function addRegistro(string $tipo, array $registro){
 
     file_put_contents($database_file, json_encode($registros, JSON_PRETTY_PRINT));
 
-    return $registro['id'];
+    return $registro;
 
     /*
     fwrite($fp, json_encode($registros));
@@ -80,6 +80,9 @@ function getRegistros(string $tipo){
     return json_decode(file_get_contents($database_file),true);
 
 }
+function () {
+    
+}
 
 
 function addLargeText($text){
@@ -104,6 +107,32 @@ function getLargeText($id){
    return  file_get_contents(__DIR__."/database/textos/$id.txt");
 }
 
+function remove($tipo, $chave ,$posicao){ #tem que garanti permições pra escrever no arquivo caso contrário vai dar uns erros muito loucs que da vontade de dar um soco no computador ^-^
+     $database = __DIR__."/database";
+    
+    $database_file = $database."/$tipo.json";
+
+    $json = [];
+
+
+    if (file_exists($database_file)) {
+        $json = json_decode(file_get_contents($database_file, JSON_PRETTY_PRINT), true);
+    }
+
+
+      for ($i=0; $i < count($json) ; $i++) { 
+        if (trim($json[$i][$chave])==$posicao) {
+            unset($json[$i]);
+        }
+    }
+
+    $certo = array_values($json);
+    
+    #é
+    
+    file_put_contents($database_file, json_encode($certo,JSON_PRETTY_PRINT));
+
+}
 
 
 /**

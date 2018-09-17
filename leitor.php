@@ -1,22 +1,46 @@
 <?php
-
 require_once(__DIR__.'/utils.php');
-
 $page = new Page();
 $page->title = "Leitor de Textos";
+
+
 if (isset($_GET['id_obra'])) { #Pra mostrar titulo e autor na Div.
     $getTitulo = getRegistro('obras','id',$_GET['id_obra']);
     $getAutor = getRegistro('autores','id', $getTitulo['id_autor']);
     $titulo = $getTitulo['obra'];
     $autor = $getAutor['nome'];
+ 
+
+    
+
+    $checa = getRegistro('status_obra','id_obra',$_GET['id_obra']);
+    $atual = isset($_GET['page']) ? $_GET['page'] : $checa['page'];
+    if ($checa) {
+
+        echo "<script>
+        window.location.href='localhost/leitor.php?id_obra=".$_GET['id_obra']."&page=".$checa['page']."</script>";
+
+
+        $limpar = remove('status_obra','id_obra',$_GET['id_obra']);
+        
+        $adciona = addRegistro('status_obra',['id_obra' => $_GET['id_obra'],'page' => $atual]);
+
+
+    }else{
+
+         echo "<script>
+        window.location.href='localhost/leitor.php?id_obra=".$_GET['id_obra']."&page=1</script>";
+
+        $adciona = addRegistro('status_obra',['id_obra' => $_GET['id_obra'],'page' => $atual]);
+        
+    }
+
 
 }else{
     $titulo = 'Selecione uma obra';
     $autor = '';
 }
-
 ob_start(); // segura a saída
-
 ?>
 
     <div id="obrasList">
@@ -43,7 +67,6 @@ ob_start(); // segura a saída
             if(!empty($_GET['id_obra'])){
                 $obra = getRegistro('obras','id',$_GET['id_obra']);
                 $text = getLargeText($obra['id_large_text']);
-
                 $tamanho = strlen($text);
                 $maxCaracteres = 1000;
                 $paginas = [];
@@ -55,19 +78,15 @@ ob_start(); // segura a saída
                         $pagina = '';
                     }
                 }
-
                 if ($pagina) {
                     $paginas[] = $pagina;
                 }
-
                 $Npaginas = count($paginas);
-
-                $atual = isset($_GET['page']) ? $_GET['page'] : 1;
+                
                 $content = "";
                 if ( $atual < $Npaginas and $atual > 0) {
                     $content = $paginas[$atual-1];
                 }
-
         ?>
         <div id="scroll">
             <?php echo $content; ?>
@@ -101,12 +120,10 @@ ob_start(); // segura a saída
         .item.selected td{
             background:yellow;
         }
-
         #obrasList{
             display:inline-block;
             vertical-align:text-top;
         }
-
         #textReader {
             display:inline-block;
             vertical-align:text-top;
@@ -115,52 +132,41 @@ ob_start(); // segura a saída
             max-height: 60%;
             padding: 25px;
         }
-
         #bT{
             text-align:center;
         }
-
         #bT button,input{
             width: 10%;
             text-align: center;
             margin: 10px;
         }
-
         #textReader h2{
             text-align: center;
-
         }
-
         #textReader p {
             margin-left: 70%;
         }
-
         #scroll{
             overflow: auto;
             max-height: 25%;
             padding: 25px;
-
         }
         #scroll {
           animation-duration: 3s;
           animation-name: slidein;
         }
-
         @keyframes slide {
           from {
             margin-left: 100%;
             width: 300%
           }
-
           to {
             margin-left: 0%;
             width: 100%;
           }
         }
-
     </style>
 
 <?php
-
 $page->content = ob_get_clean(); // libera a saída
 echo $page;
