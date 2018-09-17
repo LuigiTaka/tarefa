@@ -80,10 +80,6 @@ function getRegistros(string $tipo){
     return json_decode(file_get_contents($database_file),true);
 
 }
-function () {
-    
-}
-
 
 function addLargeText($text){
 
