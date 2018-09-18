@@ -10,8 +10,7 @@ for ($i=0; $i < count($array) ; $i++) {
 	$array[$i] = explode(';', trim($array[$i]));
 
 	if(!$a = getRegistro('autores','nome',$array[$i][1])){
-	    $a = ['nome' => $array[$i][1]];
-	    $a['id'] = addRegistro('autores',$a);
+	    $a = addRegistro('autores',['nome' => $array[$i][1]]);
     }
    
 
