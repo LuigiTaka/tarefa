@@ -1,38 +1,40 @@
 <?php
 require_once(__DIR__.'/utils.php');
+
 $page = new Page();
 $page->title = "Leitor de Textos";
 
+$atual = isset($_GET['page']) ? $_GET['page'] : 1;
 
 if (isset($_GET['id_obra'])) { #Pra mostrar titulo e autor na Div.
+
     $getTitulo = getRegistro('obras','id',$_GET['id_obra']);
     $getAutor = getRegistro('autores','id', $getTitulo['id_autor']);
     $titulo = $getTitulo['obra'];
     $autor = $getAutor['nome'];
- 
 
-    
+    $page->title .= " - $titulo - $autor";
 
-    $checa = getRegistro('status_obra','id_obra',$_GET['id_obra']);
-    $atual = isset($_GET['page']) ? $_GET['page'] : $checa['page'];
-    if ($checa) {
+    if(isset($_GET['init'])){
 
-        echo "<script>
-        window.location.href='localhost/leitor.php?id_obra=".$_GET['id_obra']."&page=".$checa['page']."</script>";
+        $checa = getRegistro('status_obra','id_obra',$_GET['id_obra']);
 
+        if ($checa) {
 
-        $limpar = remove('status_obra','id_obra',$_GET['id_obra']);
-        
-        $adciona = addRegistro('status_obra',['id_obra' => $_GET['id_obra'],'page' => $atual]);
+            removeRegistro('status_obra','id_obra',$_GET['id_obra']);
 
+            $adciona = addRegistro('status_obra',['id_obra' => $_GET['id_obra'],'page' => $atual]);
 
-    }else{
+            redirect("?id_obra=".$_GET['id_obra']."&page=".$checa['page']);
 
-         echo "<script>
-        window.location.href='localhost/leitor.php?id_obra=".$_GET['id_obra']."&page=1</script>";
+        }else{
 
-        $adciona = addRegistro('status_obra',['id_obra' => $_GET['id_obra'],'page' => $atual]);
-        
+            $adciona = addRegistro('status_obra',['id_obra' => $_GET['id_obra'],'page' => $atual]);
+
+            redirect("?id_obra=".$_GET['id_obra']."&page=1");
+
+        }
+
     }
 
 
@@ -49,7 +51,7 @@ ob_start(); // segura a saída
                 <?php foreach(getRegistros('obras') as $obra) : ?>
                     <tr class="item <?php if(!empty($_GET['id_obra'])&&$_GET['id_obra']==$obra['id']) echo 'selected' ?>">
                         <td>
-                            <a href="?id_obra=<?php echo $obra['id']; ?>"><?php echo $obra['obra']; ?></a>
+                            <a href="?id_obra=<?php echo $obra['id']; ?>&init=1"><?php echo $obra['obra']; ?></a>
                             <span style="color:gray;"><?php echo getRegistro('autores','id',$obra['id_autor'])['nome']; ?></span>
                         </td>
                         <td></td>
@@ -67,22 +69,9 @@ ob_start(); // segura a saída
             if(!empty($_GET['id_obra'])){
                 $obra = getRegistro('obras','id',$_GET['id_obra']);
                 $text = getLargeText($obra['id_large_text']);
-                $tamanho = strlen($text);
-                $maxCaracteres = 1000;
-                $paginas = [];
-                $pagina = '';
-                for ($i=0; $i < $tamanho ; $i++) {
-                    $pagina .= substr($text, $i, 1);
-                    if (strlen($pagina) == $maxCaracteres) {
-                        $paginas[] = $pagina;
-                        $pagina = '';
-                    }
-                }
-                if ($pagina) {
-                    $paginas[] = $pagina;
-                }
+                $text = strip_tags($text);
+                $paginas = splitText($text, 1000);
                 $Npaginas = count($paginas);
-                
                 $content = "";
                 if ( $atual < $Npaginas and $atual > 0) {
                     $content = $paginas[$atual-1];
@@ -95,9 +84,9 @@ ob_start(); // segura a saída
 
             <input type="button" onClick="location.href='?id_obra=<?php echo $_GET['id_obra']; ?>&page=<?php echo $atual-1; ?>'" value="<<<" />
 
-            <?php echo "Página ".$atual." de" ?>
-            <input disabled value="<?php echo $Npaginas-1 ?>">
-
+            <span id="page_stats">
+                <?php echo "Página ".$atual." de ".$Npaginas ?>
+            </span>
             <input type="button" onClick="location.href='?id_obra=<?php echo $_GET['id_obra']; ?>&page=<?php echo $atual+1; ?>'" value=">>>" />
 
         </div>
@@ -135,11 +124,16 @@ ob_start(); // segura a saída
         #bT{
             text-align:center;
         }
-        #bT button,input{
-            width: 10%;
+        #bT button{
             text-align: center;
-            margin: 10px;
         }
+
+        #page_stats{
+            display:inline-block;
+            margin-left:10px;
+            margin-right:10px;
+        }
+
         #textReader h2{
             text-align: center;
         }
@@ -148,7 +142,7 @@ ob_start(); // segura a saída
         }
         #scroll{
             overflow: auto;
-            max-height: 25%;
+            height: 400px;
             padding: 25px;
         }
         #scroll {

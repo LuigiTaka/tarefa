@@ -103,7 +103,7 @@ function getLargeText($id){
    return  file_get_contents(__DIR__."/database/textos/$id.txt");
 }
 
-function remove($tipo, $chave ,$posicao){ #tem que garanti permições pra escrever no arquivo caso contrário vai dar uns erros muito loucs que da vontade de dar um soco no computador ^-^
+function removeRegistro($tipo, $chave ,$posicao){ #tem que garanti permições pra escrever no arquivo caso contrário vai dar uns erros muito loucs que da vontade de dar um soco no computador ^-^
      $database = __DIR__."/database";
     
     $database_file = $database."/$tipo.json";
@@ -128,6 +128,28 @@ function remove($tipo, $chave ,$posicao){ #tem que garanti permições pra escre
     
     file_put_contents($database_file, json_encode($certo,JSON_PRETTY_PRINT));
 
+}
+
+function redirect($url){
+    echo "<script>window.location.href='$url'</script>";
+    die();
+}
+
+function splitText($text, $maxCaracteres=1000){
+    $tamanho = strlen($text);
+    $paginas = [];
+    $pagina = '';
+    for ($i=0; $i < $tamanho ; $i++) {
+        $pagina .= substr($text, $i, 1);
+        if (strlen($pagina) == $maxCaracteres) {
+            $paginas[] = $pagina;
+            $pagina = '';
+        }
+    }
+    if ($pagina) {
+        $paginas[] = $pagina;
+    }
+    return $paginas;
 }
 
 
