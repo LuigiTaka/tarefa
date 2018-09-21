@@ -8,22 +8,11 @@ $atual = isset($_GET['page']) ? $_GET['page'] : 1;
 
 if (isset($_GET['id_obra'])) { #Pra mostrar titulo e autor na Div.
 
-    $getTitulo = getRegistro('obras','id',$_GET['id_obra']);
-    $getAutor = getRegistro('autores','id', $getTitulo['id_autor']);
-    $titulo = $getTitulo['obra'];
-    $autor = $getAutor['nome'];
-
-    $page->title .= " - $titulo - $autor";
-
     if(isset($_GET['init'])){
 
         $checa = getRegistro('status_obra','id_obra',$_GET['id_obra']);
 
         if ($checa) {
-
-            removeRegistro('status_obra','id_obra',$_GET['id_obra']);
-
-            $adciona = addRegistro('status_obra',['id_obra' => $_GET['id_obra'],'page' => $atual]);
 
             redirect("?id_obra=".$_GET['id_obra']."&page=".$checa['page']);
 
@@ -37,6 +26,15 @@ if (isset($_GET['id_obra'])) { #Pra mostrar titulo e autor na Div.
 
     }
 
+    removeRegistro('status_obra','id_obra',$_GET['id_obra']);
+    $adciona = addRegistro('status_obra',['id_obra' => $_GET['id_obra'],'page' => $atual]);
+
+    $getTitulo = getRegistro('obras','id',$_GET['id_obra']);
+    $getAutor = getRegistro('autores','id', $getTitulo['id_autor']);
+    $titulo = $getTitulo['obra'];
+    $autor = $getAutor['nome'];
+
+    $page->title .= " - $titulo - $autor";
 
 }else{
     $titulo = 'Selecione uma obra';
