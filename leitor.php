@@ -26,6 +26,11 @@ if (isset($_GET['id_obra'])) { #Pra mostrar titulo e autor na Div.
 
     }
 
+    if (isset($_POST['anotacoes'])) {
+        addRegistro('trechos_obras',['trecho' => $_POST['anotacoes'],'page' => $_GET['page'],'id_obra' => $_GET['id_obra']]);
+        unset($_POST['anotacoes']);
+    }
+
     removeRegistro('status_obra','id_obra',$_GET['id_obra']);
     $adciona = addRegistro('status_obra',['id_obra' => $_GET['id_obra'],'page' => $atual]);
 
@@ -40,6 +45,9 @@ if (isset($_GET['id_obra'])) { #Pra mostrar titulo e autor na Div.
     $titulo = 'Selecione uma obra';
     $autor = '';
 }
+
+
+
 ob_start(); // segura a saída
 ?>
 
@@ -67,13 +75,18 @@ ob_start(); // segura a saída
             if(!empty($_GET['id_obra'])){
                 $obra = getRegistro('obras','id',$_GET['id_obra']);
                 $text = getLargeText($obra['id_large_text']);
+                $trecho = getRegistro('trechos_obras','page',$_GET['page']);
                 $text = strip_tags($text);
-                $paginas = splitText($text, 1000);
+                $troca = str_replace($trecho['trecho'],"<mark>".$trecho['trecho']."</mark>", $text);
+                $paginas = splitText($troca);
                 $Npaginas = count($paginas);
+   
                 $content = "";
                 if ( $atual < $Npaginas and $atual > 0) {
                     $content = $paginas[$atual-1];
                 }
+
+         
         ?>
         <div id="scroll">
             <?php echo $content; ?>
@@ -89,6 +102,13 @@ ob_start(); // segura a saída
 
         </div>
         <?php } ?>
+    </div>
+
+    <div id="anotacoes">
+        <form method="POST">
+            <input type="text" name="anotacoes">
+            <input type="submit">
+        </form>
     </div>
 
      <style>
