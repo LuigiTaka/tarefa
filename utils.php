@@ -172,6 +172,23 @@ class Page
             <body>
                 <?php echo $this->content; ?>
             </body>
+
+            <style>
+                table .header th{
+                    background:black;
+                    color:white;
+                    text-align:left;
+                }
+                table tr.item td{
+                    background:snow;
+                    border-bottom:1px dashed silver;
+                }
+
+                table tr.item:hover td{
+                    background:oldlace;
+                }
+            </style>
+
         </html>
         <?php
     }
