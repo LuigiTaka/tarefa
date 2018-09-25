@@ -27,7 +27,7 @@ if (isset($_GET['id_obra'])) { #Pra mostrar titulo e autor na Div.
     }
 
     if (isset($_POST['anotacoes'])) {
-        addRegistro('trechos_obras',['trecho' => $_POST['anotacoes'],'page' => $_GET['page'],'id_obra' => $_GET['id_obra']]);
+        addRegistro('trechos_obras',['trecho' => trim($_POST['anotacoes']),'page' => $_GET['page'],'id_obra' => $_GET['id_obra']]);
         unset($_POST['anotacoes']);
     }
 
@@ -50,6 +50,29 @@ if (isset($_GET['id_obra'])) { #Pra mostrar titulo e autor na Div.
 
 ob_start(); // segura a saída
 ?>
+
+    <script type="text/javascript">
+        function getSelectionText() {
+            var text = "";
+            var activeEl = document.activeElement;
+            var activeElTagName = activeEl ? activeEl.tagName.toLowerCase() : null;
+            if (
+              (activeElTagName == "div") || (activeElTagName == "input" &&
+              /^(?:text|search|password|tel|url)$/i.test(activeEl.type)) &&
+              (typeof activeEl.selectionStart == "number")
+            ) {
+                text = activeEl.value.slice(activeEl.selectionStart, activeEl.selectionEnd);
+            } else if (window.getSelection) {
+                text = window.getSelection().toString();
+            }
+            console.log(text);
+            return text;
+        }
+
+        document.onmouseup = document.onkeyup = document.onselectionchange = function() {
+          document.getElementById("anotacoes").value = getSelectionText();
+        };
+    </script>
 
     <div id="obrasList">
         <table>
@@ -75,22 +98,39 @@ ob_start(); // segura a saída
             if(!empty($_GET['id_obra'])){
                 $obra = getRegistro('obras','id',$_GET['id_obra']);
                 $text = getLargeText($obra['id_large_text']);
-                $trecho = getRegistro('trechos_obras','page',$_GET['page']);
+                #$trecho = getRegistros('trechos_obras');
+
                 $text = strip_tags($text);
-                $troca = str_replace($trecho['trecho'],"<mark>".$trecho['trecho']."</mark>", $text);
-                $paginas = splitText($troca);
+
+                $paginas = splitText($text);
+
                 $Npaginas = count($paginas);
-   
+
                 $content = "";
-                if ( $atual < $Npaginas and $atual > 0) {
+
+                if ( ($atual < $Npaginas) and ($atual > 0)) {
+
                     $content = $paginas[$atual-1];
+                    foreach (getRegistros('trechos_obras') as $trecho) {
+                        if ($_GET['id_obra'] == $trecho['id_obra'] and $_GET['page'] == $trecho['page']) {
+                            $content = str_replace($trecho['trecho'], "<mark>".$trecho['trecho']."</mark>", $content);
+                        }
+                    }
+                    
                 }
+
+                
 
          
         ?>
-        <div id="scroll">
-            <?php echo $content; ?>
+        <div id="scroll" onmousedown="getSelectionText();">
+            <div>
+                <?php echo $content; ?>
+            </div>
+            
         </div>
+
+
         <div id="bT">
 
             <input type="button" onClick="location.href='?id_obra=<?php echo $_GET['id_obra']; ?>&page=<?php echo $atual-1; ?>'" value="<<<" />
@@ -100,16 +140,20 @@ ob_start(); // segura a saída
             </span>
             <input type="button" onClick="location.href='?id_obra=<?php echo $_GET['id_obra']; ?>&page=<?php echo $atual+1; ?>'" value=">>>" />
 
+
         </div>
         <?php } ?>
     </div>
 
-    <div id="anotacoes">
+    <div id="ant">
         <form method="POST">
-            <input type="text" name="anotacoes">
-            <input type="submit">
+            <textarea id="anotacoes" rows="10" cols="20" name="anotacoes" placeholder="Confira as linhas marcadas..."></textarea>
+            <input type="submit" value="Salvar">
         </form>
     </div>
+
+    
+   
 
      <style>
         a{
@@ -134,7 +178,7 @@ ob_start(); // segura a saída
         #textReader {
             display:inline-block;
             vertical-align:text-top;
-            width:500px;
+            width:400px;
             border: solid 1px black;
             max-height: 60%;
             padding: 25px;
@@ -163,20 +207,16 @@ ob_start(); // segura a saída
             height: 400px;
             padding: 25px;
         }
-        #scroll {
-          animation-duration: 3s;
-          animation-name: slidein;
-        }
-        @keyframes slide {
-          from {
-            margin-left: 100%;
-            width: 300%
-          }
-          to {
-            margin-left: 0%;
-            width: 100%;
-          }
-        }
+        #ant {
+            display: inline-block;
+            vertical-align: text-top;
+            widows: 100px;
+         }
+         #ant input {
+            display: block;
+            margin-top: 4px;
+
+         }
     </style>
 
 <?php
