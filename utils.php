@@ -152,6 +152,15 @@ function splitText($text, $maxCaracteres=1000){
     return $paginas;
 }
 
+function creObra($a, $b) {
+   return $a['obra'] > $b['obra'];
+}
+
+function decObra($a,$b){
+    return $a['obra'] < $b['obra'];
+}
+
+
 
 /**
  * 
