@@ -10,7 +10,7 @@ $pg->title = 'Configuração de Estoque';
 $getObras = getRegistros('obras');
 $getEstoque = getRegistros('estoque_controle');
 
-
+//teste
 
 
 
