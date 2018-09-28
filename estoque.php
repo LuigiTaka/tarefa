@@ -1,31 +1,11 @@
 <?php
-
-require_once(__DIR__.'/utils.php');
-
-
+require_once(__DIR__."/utils.php");
 
 $pg = new Page();
 $pg->title = 'Configuração de Estoque';
 
 $getObras = getRegistros('obras');
 $getEstoque = getRegistros('estoque_controle');
-
-//teste
-
-
-
-for ($i=0; $i <count($getObras) ; $i++) { 
-    if (!empty($_POST['preco'.$i])) {
-        $estoque = addRegistro('estoque_controle',['preco' => $_POST['preco'.$i],'qtde' => $_POST['qtde'.$i], 'obra' => $getObras[$i]['obra'] ]);
-    }
-
-    
-
-    unset($_POST['preco'.$i]);
-    unset($_POST['qtde'.$i]);
-    
-}
-
 
 if (!empty($_GET['a']) == "1") {
     $a = usort($getObras,"creObra");
@@ -37,6 +17,7 @@ if (!empty($_GET['a']) == "1") {
 
 
 
+
 ob_start();
 
 ?>
@@ -45,26 +26,39 @@ ob_start();
 <form method="POST">
     <table>
         <thead class="header">
-            <th><a href="<?php echo $link ?>">Obra</a></th>
+            <th><a href="<?php echo $link; ?>">Obra</a></th>
             <th><a href="">Autor</a></th>
-            <th><a href="">Preço</a></th>
+            <th><a href="<?php echo $link2; ?>">Preço</a></th>
             <th>Qtde</th>
         </thead>
         <?php $i = 0; ?>
         <?php foreach($getObras as $obra) : ?>
-        
+
             <tr class="item">
-                <td><?php echo $obra['obra']; ?></td>
+                <td id="<?php echo $i; ?>"><?php echo $obra['obra']; ?></td>
                 <td><?php echo getRegistro('autores','id',$obra['id_autor'])['nome']; ?></td>
-                <td><input placeholder="Sem preço" name="preco<?php echo $i; ?>" value ="<?php if($a = getRegistro('estoque_controle','obra',$obra['obra'])) echo $a['preco']; ?>" /></td>
-                <td><input type="number" placeholder="0" name="qtde<?php echo $i;?>" value="<?php if($a = getRegistro('estoque_controle','obra',$obra['obra'])) echo $a['qtde']; ?>" /></td>
-            
+
+
+                <td><input placeholder="Sem preço" name="p<?php echo $i; ?>" value ="<?php if($a = getRegistro('estoque_controle','id_obra',$obra['id_obra'])) echo $a['preco']; ?>"  /></td>
+
+
+
+                <td><input type="number" placeholder="0" name="q<?php echo $i;?>" value="<?php if($a = getRegistro('estoque_controle','id_obra',$obra['id_obra'])) echo $a['qtde']; ?>"/></td>
+
+                <?php 
+                if (!empty($_POST['q'.$i]) and !empty($_POST['q'.$i])) {
+                     addRegistro('estoque_controle',
+                        ['preco'=> $_POST['p'.$i], 'qtde' => $_POST['q'.$i], 'id_obra' => $obra['id_obra']]);
+                }
+               
+                ?>
             </tr>
         
-        <?php $i+=1;
-        
+        <?php $i++;
+            
          ?>
         <?php endforeach; ?>
+
 
     </table>
 </div>
@@ -81,6 +75,7 @@ ob_start();
     }
 </style>
 <?php
+
 
 $pg->content = ob_get_clean();
 echo $pg;
