@@ -35,7 +35,7 @@ ob_start();
         <?php foreach($getObras as $obra) : ?>
 
             <tr class="item">
-                <td id="<?php echo $i; ?>"><?php echo $obra['obra']; ?></td>
+                <td ><?php echo $obra['obra']; ?></td>
                 <td><?php echo getRegistro('autores','id',$obra['id_autor'])['nome']; ?></td>
 
 
