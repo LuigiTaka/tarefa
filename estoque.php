@@ -17,39 +17,49 @@ foreach ($getObras as $obra) {
     'id_obra' => $obra['id_obra']];
 }
 
-if (!empty($_GET['a']) == "1") {
-    $a = usort($infos,"creObra");
-    $link = "?a=0";
-}else{
-    usort($infos, "decObra");
-    $link = "?a=1";
+if(!empty($_GET['sort_by'])){
+
+    if($_GET['sort_order']=='ASC'){
+        $sorter = function($a,$b){
+            return $a[$_GET['sort_by']] > $b[$_GET['sort_by']];
+        };
+    } else {
+        $sorter = function($a,$b){
+            return $a[$_GET['sort_by']] < $b[$_GET['sort_by']];
+        };
+    }
+
+    uasort($infos,$sorter);
+
 }
 
-if (!empty($_GET['b'])== "1") {
-    usort($infos, "creAut");
-    $link2 = "?b=0";
-}else{
-    usort($infos, "decAut");
-    $link2 = "?b=1";
+function geraUrlOrdenacao($coluna){
+    if(!empty($_GET['sort_by']) && $_GET['sort_by']==$coluna){
+        $order = $_GET['sort_order']=='ASC' ? 'DESC' : 'ASC';
+    } else {
+        $order = 'ASC';
+    }
+    return "?sort_by=$coluna&sort_order=$order";
 }
 
 ob_start();
 
 ?>
+
 <h1>Estoque</h1>
 <div style="height:400px;overflow-x:scroll;display:inline-block;">
 <form method="POST">
     <table>
         <thead class="header">
             <th>
-                <a href="<?php echo $link; ?>">Obra</a>
+                <a href="<?php echo geraUrlOrdenacao('obra'); ?>">Obra</a>
             </th>
 
             <th>
-                <a href="<?php echo $link2; ?>">Autor</a>
+                <a href="<?php echo geraUrlOrdenacao('autor'); ?>">Autor</a>
             </th>
             <th>
-                <a href="<?php echo $link3 ?>">Preço</a>
+                <a href="<?php echo geraUrlOrdenacao('preco') ?>">Preço</a>
             </th>
 
             <th>Qtde</th>
