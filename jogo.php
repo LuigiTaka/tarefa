@@ -1,8 +1,48 @@
-<!DOCTYPE html>
-<html>
-<head>
+<?php 
+require_once(__DIR__."/utils.php");
+
+$page = new Page();
+
+$page->title = "Jogo de letras";
+
+	$colunas = 6;
+	$linhas = 6;
+	$controle = 12;
+	$letras = [];
+	for ($i=0; $i < 100 ; $i++) { 
+		$letras[] = $random_string = chr(rand(65,90));
+	}
+
+	$empty_at = [rand(1,6),rand(1,6)];
+	
+ob_start();
+
+?>
+<table id="table">
+    <?php 
+    	for ($n=1; $n <=$colunas ; $n++) { 
+    		echo "<tr>";
+	    		for ($f=1; $f <=$linhas ; $f++) { 
+	    			
+	    			if ($n === $empty_at[0] and $f === $empty_at[1]) {
+	    				echo "<td class='empty'>".$letras[rand(0,99)]."</td>";
+	    			}else{
+	    				echo "<td value = ".($f+$n+6).">".$letras[rand(0,99)]."</td>";
+	    			}
+	    			
+	    		}
+    		echo "</tr>";	
+    	}
+    	
+     ?>
+</table>
+
     <style type="text/css">
-        
+     body{
+        background:gainsboro;
+    }
+
+
     #table{
         border:1px solid black;
     }
@@ -20,45 +60,21 @@
         color:black;
     }
 
-    body{
-        background:gainsboro;
-    }
     #table td:not(.empty):hover{
         background:oldlace;
         cursor:pointer;
     }
+
+    #table td:not(.emtpy):hover{
+
+    }
+
+    #table td + td.emtpy{
+    	width: 2000px;
+    }
+
     </style>
-    <title></title>
-</head>
-<body>
+<?php 
 
-<table id="table">
-    <tr>
-        <?php for ($i=0; $i < 3; $i++) { 
-            $random_number = intval( "0" . rand(1,9) . rand(0,9) . rand(0,9) . rand(0,9) . rand(0,9) ); // random(ish) 5 digit int
-
-            $random_string = chr(rand(65,90)); // random(ish) 5 character string
-            echo "<td>".$random_string."</td>";
-        } ?>
-    </tr>
-
-     <tr>
-       <?php for ($i=0; $i < 3; $i++) { 
-            $random_number = intval( "0" . rand(1,9) . rand(0,9) . rand(0,9) . rand(0,9) . rand(0,9) ); // random(ish) 5 digit int
-
-            $random_string = chr(rand(65,90)); // random(ish) 5 character string
-            echo "<td>".$random_string."</td>";
-        } ?>
-    </tr>
-
-     <tr>
-        <?php for ($i=0; $i < 3; $i++) { 
-            $random_number = intval( "0" . rand(1,9) . rand(0,9) . rand(0,9) . rand(0,9) . rand(0,9) ); // random(ish) 5 digit int
-
-            $random_string = chr(rand(65,90)); // random(ish) 5 character string
-            echo "<td>".$random_string."</td>";
-        } ?>
-    </tr>
-</table>
-</body>
-</html>
+$page->content = ob_get_clean();
+echo $page;
