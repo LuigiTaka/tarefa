@@ -65,13 +65,6 @@ ob_start();
         cursor:pointer;
     }
 
-    #table td:not(.emtpy):hover{
-
-    }
-
-    #table td + td.emtpy{
-    	width: 2000px;
-    }
 
     </style>
 <?php 
