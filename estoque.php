@@ -62,7 +62,7 @@ ob_start();
                 <a href="<?php echo geraUrlOrdenacao('preco') ?>">Preço</a>
             </th>
 
-            <th>Qtde</th>
+            <th> <a href="<?php echo geraUrlOrdenacao('qtde') ?>">Qtde</a></th>
         </thead>
         <?php $i = 0; ?>
         <?php foreach($infos as $obra) : ?>

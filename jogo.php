@@ -25,9 +25,9 @@ ob_start();
 	    		for ($f=1; $f <=$linhas ; $f++) { 
 	    			
 	    			if ($n === $empty_at[0] and $f === $empty_at[1]) {
-	    				echo "<td class='empty'>".$letras[rand(0,99)]."</td>";
+	    				echo "<td class='empty'> <a href='?a=0'>".$letras[rand(0,99)]."</a></td>";
 	    			}else{
-	    				echo "<td value = ".($f+$n+6).">".$letras[rand(0,99)]."</td>";
+	    				echo "<td value = ".($f+$n+6)."><a href='?a=1'>".$letras[rand(0,99)]."</a> </td>";
 	    			}
 	    			
 	    		}
@@ -36,7 +36,7 @@ ob_start();
     	
      ?>
 </table>
-
+    
     <style type="text/css">
      body{
         background:gainsboro;
