@@ -12,9 +12,15 @@ $empty_at = [rand(1,6),rand(1,6)];
 
 
 if (!getRegistro('teste2','id',1)){
-    for ($i=0; $i < 36 ; $i++) { 
-        $letras[] = chr(rand(65,90));
+    for ($i=0; $i < 6 ; $i++) { 
+        $letras[$i][] = chr(rand(65,90));
+       
+       		while (count($letras[$i]) < 6) {
+       			$letras[$i][] =  chr(rand(65,90));
+       		}
     }
+
+	
 	addRegistro('teste2',['tabela' => $letras, 'vazio' => $empty_at]);
 }
 
@@ -58,16 +64,19 @@ ob_start();
 ?>
 
 
+
+
+
 <table id="table">
     <?php 
-    	for ($n=1; $n <=$colunas ; $n++) { 
+    	for ($n=0; $n < $colunas ; $n++) { 
     		echo "<tr>";
-	    		for ($f=1; $f <=$linhas ; $f++) {
+	    		for ($f=0; $f < $linhas ; $f++) {
 
         			if ($n === $get['vazio'][0] and $f === $get['vazio'][1]) {
         				echo "<td class='empty'></td>";
         			}else{
-        				echo "<td><a href='?coluna=$n&linha=$f'>".$get['tabela'][rand(0,count($get['tabela'])-1)]."</a>
+        				echo "<td><a href='?coluna=$n&linha=$f'>".$get['tabela'][$n][$f]."</a>
 
                         </td>";
 		    		}	
