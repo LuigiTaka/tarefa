@@ -12,7 +12,7 @@ $empty_at = [rand(1,6),rand(1,6)];
 
 
 if (!getRegistro('teste2','id',1)){
-    for ($i=0; $i < 6 ; $i++) { 
+    for ($i=0; $i < 7 ; $i++) { 
         $letras[$i][] = chr(rand(65,90));
        
        		while (count($letras[$i]) < 6) {
@@ -28,10 +28,12 @@ $get = getRegistro('teste2','id',1);
 
 
 
+
+
 if (!empty($_GET['coluna']) && !empty($_GET['linha'])) {
     settype($_GET['coluna'], "integer");
     settype($_GET['linha'], "integer");
-    //$get['vazio'] = [$_GET['coluna'],$_GET['linha']];
+   
    
     if ($_GET['coluna'] == $get['vazio'][0]+1 and $_GET['linha'] == $get['vazio'][1] or
      $_GET['coluna'] == $get['vazio'][0]-1 and $_GET['linha'] == $get['vazio'][1]) {
@@ -63,15 +65,11 @@ ob_start();
 
 ?>
 
-
-
-
-
 <table id="table">
     <?php 
-    	for ($n=0; $n < $colunas ; $n++) { 
+    	for ($n=1; $n < $colunas ; $n++) { 
     		echo "<tr>";
-	    		for ($f=0; $f < $linhas ; $f++) {
+	    		for ($f=1; $f < $linhas ; $f++) {
 
         			if ($n === $get['vazio'][0] and $f === $get['vazio'][1]) {
         				echo "<td class='empty'></td>";
