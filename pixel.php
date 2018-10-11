@@ -7,7 +7,29 @@ $page->title = "Pixel tool";
 $coluna = 16;
 $linha = 16;
 
-$cor = isset($_POST['cor'])? $_POST['cor']:'black';
+
+
+if (isset($_POST['cor'])) {
+	if (!getRegistros('cores')) {
+
+		addRegistro('cores',['cor' => $_POST['cor'] ]);
+	}else{
+		$json = json_decode(file_get_contents(__DIR__.'/database/cores.json'),true); 
+
+	    $json[0]['cor'] = $_POST['cor'];
+
+	    file_put_contents(__DIR__.'/database/cores.json', json_encode($json,JSON_PRETTY_PRINT)); 
+	}
+}
+$getCor = getRegistro('cores','id',1);	
+$cor = isset($_POST['cor'])?$getCor['cor']:'black';
+
+if (isset($_GET['coluna']) and isset($_GET['linha'])) {
+	if (!getRegistro('tabela','coluna',$_GET['coluna']) or !getRegistro('tabela','linha',$_GET['linha'])) {
+		addRegistro('tabela',['coluna' => $_GET['coluna'], 'linha' => $_GET['linha'], 'cor' => $getCor['cor']]);
+	}
+	
+}
 
 
 ?>
@@ -27,28 +49,29 @@ $cor = isset($_POST['cor'])? $_POST['cor']:'black';
 			<option value="black">Black</option>
 		</select>
 
-		<input type="submit" name="">
+		<input type="submit" name="Enviar">
 	</form>
 </div>
 
 <hr>
 
-<table id="table">
+<table id="table" >
 	<?php 
-		for ($c=1; $c <=  $coluna; $c++) { 
-			echo "<tr>";
-			for ($l=1; $l <=$linha ; $l++) {
-				if (isset($_GET['coluna']) and isset($_GET['linha']) and $_GET['coluna'] == $c and $_GET['linha'] == $l  ) {
+	
+    	for ($n=1; $n <= $coluna ; $n++) { 
+    		$teste = getRegistro('tabela','id',$n);
+    		echo "<tr>";
+	    		for ($f=1; $f <= $linha ; $f++) {
 
-					echo "<td class='teste'><a href='?coluna=$c&linha=$l' rel='noreferrer'>&nbsp;</a></td>";
-					
-				}else{
-					echo "<td class=''><a href='?coluna=$c&linha=$l' rel='noreferrer'>&nbsp;</a></td>";
-				}
-			}	
-			echo "</tr>";
-		}
-		
+        			if ($teste['coluna'] == $n and $teste['linha'] == $f) {
+        				echo "<td class = 'pinta'><a href='?coluna=$n&linha=$f' rel='noreferrer'> . </a></td>";
+        			}else{
+        				echo "<td ><a href='?coluna=$n&linha=$f' rel='noreferrer'> . </a></td>";
+
+                   }	
+	    		}
+    		echo "</tr>";	
+    	}    	
 
 	 ?>
 </table>
@@ -72,7 +95,7 @@ $cor = isset($_POST['cor'])? $_POST['cor']:'black';
     }
 
     #table td:not(.vazio):hover{
-	    background: <?php echo $cor; ?>;
+	    background: oldlace;
 	    cursor:pointer;
     }
 
@@ -96,13 +119,10 @@ $cor = isset($_POST['cor'])? $_POST['cor']:'black';
         color:white;
     }
 
-    .vazio {
-    	background-color: white;
+    .pinta {
+    	background-color: <?php echo $getCor['cor']; ?>;
     }
- 	
- 	.teste {
- 		background-color: <?php echo $cor; ?>;
- 	}
+
 </style>
 
 <?php 
