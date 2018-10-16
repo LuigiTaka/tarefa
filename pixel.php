@@ -1,132 +1,120 @@
-<?php 
-require_once(__DIR__."/utils.php");
-$page = new Page;
+<?php
 
-$page->title = "Pixel tool";
+$lines = isset($_GET['lines'])?$_GET['lines']:8;
+$cols = isset($_GET['cols'])?$_GET['cols']:8;
 
-$coluna = 16;
-$linha = 16;
+$colors = ['Black','Red','Green','Blue'];
 
+$data = [
+    'color' => 'Black',
+    'pixels' => [],
+    'zoom' => 0
+];
 
-
-if (isset($_POST['cor'])) {
-	if (!getRegistros('cores')) {
-
-		addRegistro('cores',['cor' => $_POST['cor'] ]);
-	}else{
-		$json = json_decode(file_get_contents(__DIR__.'/database/cores.json'),true); 
-
-	    $json[0]['cor'] = $_POST['cor'];
-
-	    file_put_contents(__DIR__.'/database/cores.json', json_encode($json,JSON_PRETTY_PRINT)); 
-	}
+if(isset($_GET['data'])){
+    $data = json_decode($_GET['data'],TRUE);
 }
-$getCor = getRegistro('cores','id',1);	
-$cor = isset($_POST['cor'])?$getCor['cor']:'black';
 
-if (isset($_GET['coluna']) and isset($_GET['linha'])) {
-	if (!getRegistro('tabela','coluna',$_GET['coluna']) or !getRegistro('tabela','linha',$_GET['linha'])) {
-		addRegistro('tabela',['coluna' => $_GET['coluna'], 'linha' => $_GET['linha'], 'cor' => $getCor['cor']]);
-	}
-	
+if(isset($_GET['color'])){
+    $data['color'] = $_GET['color'];
 }
+
+if(isset($_GET['zoom'])){
+    $data['zoom'] += $_GET['zoom']=='in' ? +1 : -1;
+}
+
+if(isset($_GET['click'])){
+    list($l,$c) = explode('-',$_GET['click']);
+    if(empty($data['pixels'][$l][$c])){
+        $data['pixels'][$l][$c] = $data['color'];
+    } else {
+        unset($data['pixels'][$l][$c]);
+    }
+}
+
 
 
 ?>
 
+<form method="GET">
 
-<div>
-	<form method="POST">
-		Zoom: 
-		<a class="zoom" href="">+</a>
-		<a class="zoom" href="">-</a>
+    <button name="zoom" value="in">+</button>
+    <button name="zoom" value="out">-</button>
 
-		&nbsp;&nbsp;
+    N de linhas: <input type="number" name="lines" value="<?php echo $lines; ?>">
+    N de Colunas: <input type="number" name="cols" value="<?php echo $cols ?>">
 
-		<select name="cor">
-			<option value="red">Red</option>
-			<option value="green">Green</option>
-			<option value="black">Black</option>
-		</select>
+    <select name="color">
+        <?php foreach($colors as $c) : ?>
+            <option value="<?php echo $c; ?>" <?php if($c==$data['color']) echo 'selected'; ?>><?php echo $c ?></option>
+        <?php endforeach; ?>
+    </select>
 
-		<input type="submit" name="Enviar">
-	</form>
-</div>
+    <hr/>
 
-<hr>
+    <table border="1">
 
-<table id="table" >
-	<?php 
-	
-    	for ($n=1; $n <= $coluna ; $n++) { 
-    		$teste = getRegistro('tabela','id',$n);
-    		echo "<tr>";
-	    		for ($f=1; $f <= $linha ; $f++) {
+        <tr>
+            <?php for ($t=1; $t <= $cols; $t++) : ?>
+                <th class="id" scope="col"><?php echo chr(64+$t); ?> </th>
+            <?php endfor; ?>
+        </tr>
 
-        			if ($teste['coluna'] == $n and $teste['linha'] == $f) {
-        				echo "<td class = 'pinta'><a href='?coluna=$n&linha=$f' rel='noreferrer'> . </a></td>";
-        			}else{
-        				echo "<td ><a href='?coluna=$n&linha=$f' rel='noreferrer'> . </a></td>";
+        <?php for($i=1;$i<=$lines;$i++) : ?>
 
-                   }	
-	    		}
-    		echo "</tr>";	
-    	}    	
+            <tr>
+                <th class="id"><?php echo $i; ?></th> 
+                <?php for($j=1;$j<=$cols;$j++) : ?>
 
-	 ?>
-</table>
+                    <td class="<?php echo isset($data['pixels'][$i][$j]) ? $data['pixels'][$i][$j] : ''; ?>">
+                        <button name="click" value="<?php echo $i.'-'.$j ?>">&nbsp;</button>
+                    </td>
 
-<style type="text/css">
-	
-    body{
-        width:9000px;
+                <?php endfor; ?>
+            </tr>
+
+        <?php endfor; ?>
+
+    </table>
+
+    <input type="hidden" name="data" value='<?php echo json_encode($data) ?>' />
+
+</form>
+
+<?php $cell_size = 20 + ($data['zoom']*5) ?>
+
+<style>
+    form > button{
+        width:40px;
     }
-    #table{
+    table{
         border-collapse: collapse;
     }
-    #table td{
-        width:20px;
-        height:20px;
-        border:1px solid black;
+    td{
+        width:<?php echo $cell_size ?>px;
+        padding:0px;
+        margin:0px;
     }
-    #table td:hover{
-        cursor:pointer;
-        background:oldlace;
-    }
-
-    #table td:not(.vazio):hover{
-	    background: oldlace;
-	    cursor:pointer;
-    }
-
-    #table a, a::selection{
-    	text-align: center;
-    	text-decoration: none;
-    	color: white;
-    }
-
-    .zoom{
-        background:snow;
-        display:inline-block;
-        border:1px solid black;
-        width:20px;
-        height:20px;
-        text-align:center;
+    td button{
+        background:transparent;
+        border:none;
+        width:<?php echo $cell_size ?>px;
+        height:<?php echo $cell_size ?>px;
         cursor:pointer;
     }
-    .zoom:hover{
-        background:black;
-        color:white;
+    <?php foreach($colors as $c) : ?>
+    td.<?php echo $c; ?> button{
+        background: <?php echo $c; ?> !important;
+    }
+    <?php endforeach; ?>
+
+    .id{
+        border: none;
+        text-align: center;
+       
+        color: red;
+
     }
 
-    .pinta {
-    	background-color: <?php echo $getCor['cor']; ?>;
-    }
 
 </style>
-
-<?php 
-$page->content = ob_get_clean();
-echo  $page;
-
-
