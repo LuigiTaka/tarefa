@@ -2,7 +2,7 @@
 
 $lines = isset($_GET['lines'])?$_GET['lines']:8;
 $cols = isset($_GET['cols'])?$_GET['cols']:8;
-
+$total = $lines * $cols;
 $colors = ['Black','Red','Green','Blue'];
 
 $data = [
@@ -30,8 +30,20 @@ if(isset($_GET['click'])){
     } else {
         unset($data['pixels'][$l][$c]);
     }
+
+    
+
 }
 
+$controle = 0;
+for ($j=1; $j <= $lines ; $j++) { 
+
+    if (array_key_exists($j, $data['pixels'])) {
+        
+        $controle +=  count($data['pixels'][$j]);
+       }
+      
+}
 
 
 ?>
@@ -41,8 +53,8 @@ if(isset($_GET['click'])){
     <button name="zoom" value="in">+</button>
     <button name="zoom" value="out">-</button>
 
-    N de linhas: <input type="number" name="lines" value="<?php echo $lines; ?>">
-    N de Colunas: <input type="number" name="cols" value="<?php echo $cols ?>">
+    Nº de linhas: <input type="number" name="lines" value="<?php echo $lines; ?>">
+    Nº de Colunas: <input type="number" name="cols" value="<?php echo $cols ?>">
 
     <select name="color">
         <?php foreach($colors as $c) : ?>
@@ -50,20 +62,29 @@ if(isset($_GET['click'])){
         <?php endforeach; ?>
     </select>
 
+  
+   
+    <?php echo $controle; ?> pixels de :  <?php echo $total ; ?>
+
     <hr/>
 
     <table border="1">
 
         <tr>
+            <th>\</th>
             <?php for ($t=1; $t <= $cols; $t++) : ?>
-                <th class="id" scope="col"><?php echo chr(64+$t); ?> </th>
+                <th class="id" ><?php if ($cols <= 26) {
+                    echo chr(64+$t);
+                }else{
+                    echo $t;
+                } ?> </th>
             <?php endfor; ?>
         </tr>
 
         <?php for($i=1;$i<=$lines;$i++) : ?>
 
             <tr>
-                <th class="id"><?php echo $i; ?></th> 
+                <th class="id" scope="row"><?php echo $i; ?></th> 
                 <?php for($j=1;$j<=$cols;$j++) : ?>
 
                     <td class="<?php echo isset($data['pixels'][$i][$j]) ? $data['pixels'][$i][$j] : ''; ?>">
@@ -111,9 +132,12 @@ if(isset($_GET['click'])){
     .id{
         border: none;
         text-align: center;
-       
-        color: red;
+        padding: 4px;
+        color: #77bfca;
+    }
 
+    input  {
+        width: 50px;
     }
 
 
