@@ -1,7 +1,9 @@
 <?php
-require_once(__DIR__.'\utils.php');
+require_once(__DIR__.'/utils.php');
 $page = new Page();
 $page->title = 'Pixel tool';
+$page->css->jqueryui = true;
+
 $lines = isset($_GET['lines'])?$_GET['lines']:8;
 $cols = isset($_GET['cols'])?$_GET['cols']:8;
 $total = $lines * $cols;
@@ -51,8 +53,8 @@ ob_start();
 
 <form method="GET">
 
-    <button name="zoom" value="in">+</button>
-    <button name="zoom" value="out">-</button>
+    <button name="zoom" value="in"><span class="ui-button ui-icon ui-icon-circle-plus"></span></button>
+    <button name="zoom" value="out"><span class="ui-button ui-icon ui-icon-circle-minus"></span></button>
 
     Nº de linhas: <input type="number" name="lines" value="<?php echo $lines; ?>">
     Nº de Colunas: <input type="number" name="cols" value="<?php echo $cols ?>">
@@ -65,11 +67,11 @@ ob_start();
 
   
    
-    <?php echo $controle; ?> pixels de :  <?php echo $total ; ?>
+    <?php echo $controle; ?> pixels de:  <?php echo $total ; ?>
 
     <hr/>
 
-    <table border="1">
+    <table border="1" style="display:inline-block;vertical-align:text-top;">
 
         <tr>
             <th>\</th>
@@ -99,6 +101,27 @@ ob_start();
 
     </table>
 
+    <div style="display:inline-block; vertical-align: text-top;">
+        <table id="moveControls">
+            <tr>
+                <td></td>
+                <td><button><span class="ui-icon ui-icon-circle-arrow-n"></span></button></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><button><span class="ui-icon ui-icon-circle-arrow-w"></span></button></td>
+                <td align="center" style="font-size:26px;"></td>
+                <td><button><span class="ui-icon ui-icon-circle-arrow-e"></span></button></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><button><span class="ui-icon ui-icon-circle-arrow-s"></span></button></td>
+                <td></td>
+            </tr>
+        </table>
+
+    </div>
+
     <input type="hidden" name="data" value='<?php echo json_encode($data) ?>' />
 
 </form>
@@ -106,9 +129,8 @@ ob_start();
 <?php $cell_size = 20 + ($data['zoom']*5) ?>
 
 <style>
-    form > button{
-        width:40px;
-    }
+
+
     table{
         border-collapse: collapse;
     }
@@ -133,14 +155,17 @@ ob_start();
     .id{
         border: none;
         text-align: center;
-        padding: 4px;
         color: #77bfca;
+
     }
 
     input  {
         width: 50px;
     }
 
+    #moveControls button:hover{
+        background:lightblue;
+    }
 
 </style>
 <?php 

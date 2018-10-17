@@ -177,6 +177,12 @@ class Page
 {
     public $title;
     public $content;
+    public $css;
+
+    function __construct()
+    {
+        $this->css = new PageCss();
+    }
 
     public function render(){
         ?>
@@ -185,6 +191,9 @@ class Page
             <head>
                 <title><?php echo $this->title; ?></title>
                 <meta charset="UTF-8" /> <!-- isso aqui é importante para que as palavras com acento não saiam com pontos de interrogação -->
+                <?php if($this->css->jqueryui) : ?>
+                    <link href="css/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+                <?php endif; ?>
             </head>
             <body>
                 <?php echo $this->content; ?>
@@ -218,4 +227,8 @@ class Page
         return ob_get_clean();
     }
 
+}
+
+class PageCss{
+    var $jqueryui = false;
 }
