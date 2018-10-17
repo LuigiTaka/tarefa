@@ -126,7 +126,7 @@ ob_start();
 
 </form>
 
-<?php $cell_size = 20 + ($data['zoom']*5) ?>
+<?php $cell_size = 30 + ($data['zoom']*5) ?>
 
 <style>
 
