@@ -1,5 +1,7 @@
 <?php
-
+require_once(__DIR__.'\utils.php');
+$page = new Page();
+$page->title = 'Pixel tool';
 $lines = isset($_GET['lines'])?$_GET['lines']:8;
 $cols = isset($_GET['cols'])?$_GET['cols']:8;
 $total = $lines * $cols;
@@ -44,8 +46,7 @@ for ($j=1; $j <= $lines ; $j++) {
        }
       
 }
-
-
+ob_start();
 ?>
 
 <form method="GET">
@@ -142,3 +143,6 @@ for ($j=1; $j <= $lines ; $j++) {
 
 
 </style>
+<?php 
+$page->content = ob_get_clean();
+echo $page;
