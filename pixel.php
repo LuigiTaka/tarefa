@@ -34,9 +34,6 @@ if(isset($_GET['click'])){
     } else {
         unset($data['pixels'][$l][$c]);
     }
-
-    
-
 }
 
 $controle = 0;
@@ -48,6 +45,64 @@ for ($j=1; $j <= $lines ; $j++) {
        }
       
 }
+
+var_dump($data['pixels']);
+
+echo "<br>";
+
+if (isset($_GET['posicao'])) {
+    if ($_GET['posicao'] == 'up') {
+
+        for ($i=1; $i <=$lines ; $i++) { 
+
+            for ($t=1; $t <=$cols ; $t++) { 
+
+                if (array_key_exists($i, $data['pixels']) and array_key_exists($t, $data['pixels'][$i])) {
+
+                    unset($data['pixels'][$i][$t]);
+                   
+                    $data['pixels'][$i-1][$t] = $data['color'];
+                }
+
+
+            }
+        } 
+
+    }elseif($_GET['posicao'] == 'left') {
+
+        for ($i=1; $i <=$lines ; $i++) { 
+
+            for ($t=1; $t <=$cols ; $t++) { 
+
+                if (array_key_exists($i, $data['pixels']) and array_key_exists($t, $data['pixels'][$i])) {
+
+                    unset($data['pixels'][$i][$t]);
+                   
+                    $data['pixels'][$i][$t-1] = $data['color'];
+                }
+            }
+        }  
+    }elseif ($_GET['posicao'] == 'down') { //Não estou entendendo o comportamento de $i aqui :/ help!
+
+        for ($i=1; $i <=$lines ; $i++) { 
+
+            for ($t=1; $t <=$cols ; $t++) { 
+
+                if (array_key_exists($i, $data['pixels']) and array_key_exists($t, $data['pixels'][$i])) {
+
+                    unset($data['pixels'][$i][$t]);
+                   
+                    $data['pixels'][$i+1][$t] = $data['color'];
+                }
+            }
+        } 
+    }
+
+}
+
+var_dump($data['pixels']);
+
+
 ob_start();
 ?>
 
@@ -105,17 +160,17 @@ ob_start();
         <table id="moveControls">
             <tr>
                 <td></td>
-                <td><button><span class="ui-icon ui-icon-circle-arrow-n"></span></button></td>
+                <td><button name="posicao" value="up"><span class="ui-icon ui-icon-circle-arrow-n"></span></button></td>
                 <td></td>
             </tr>
             <tr>
-                <td><button><span class="ui-icon ui-icon-circle-arrow-w"></span></button></td>
+                <td><button name="posicao" value="left"><span class="ui-icon ui-icon-circle-arrow-w"></span></button></td>
                 <td align="center" style="font-size:26px;"></td>
-                <td><button><span class="ui-icon ui-icon-circle-arrow-e"></span></button></td>
+                <td><button name="posicao" value="right"><span class="ui-icon ui-icon-circle-arrow-e"></span></button></td>
             </tr>
             <tr>
                 <td></td>
-                <td><button><span class="ui-icon ui-icon-circle-arrow-s"></span></button></td>
+                <td><button name="posicao" value="down"><span class="ui-icon ui-icon-circle-arrow-s"></span></button></td>
                 <td></td>
             </tr>
         </table>
