@@ -46,9 +46,9 @@ for ($j=1; $j <= $lines ; $j++) {
       
 }
 
-var_dump($data['pixels']);
+//var_dump($data['pixels']);
 
-echo "<br>";
+
 
 if (isset($_GET['posicao'])) {
     if ($_GET['posicao'] == 'up') {
@@ -60,8 +60,12 @@ if (isset($_GET['posicao'])) {
                 if (array_key_exists($i, $data['pixels']) and array_key_exists($t, $data['pixels'][$i])) {
 
                     unset($data['pixels'][$i][$t]);
-                   
-                    $data['pixels'][$i-1][$t] = $data['color'];
+                    if ($i-1 != 0) {
+                        $data['pixels'][$i-1][$t] = $data['color'];
+                    }else{
+                       $data['pixels'][$i][$t]= $data['color'];
+                    }
+                    
                 }
 
 
@@ -77,22 +81,47 @@ if (isset($_GET['posicao'])) {
                 if (array_key_exists($i, $data['pixels']) and array_key_exists($t, $data['pixels'][$i])) {
 
                     unset($data['pixels'][$i][$t]);
-                   
-                    $data['pixels'][$i][$t-1] = $data['color'];
+                    if ($t-1 != 0) {
+                        $data['pixels'][$i][$t-1] = $data['color'];
+                    }else{
+                        $data['pixels'][$i][$t] = $data['color'];
+                    }
+                    
                 }
             }
         }  
-    }elseif ($_GET['posicao'] == 'down') { //Não estou entendendo o comportamento de $i aqui :/ help!
+    }elseif ($_GET['posicao'] == 'down') {
 
-        for ($i=1; $i <=$lines ; $i++) { 
+        for ($i=$lines; $i >=1 ; $i--) { 
 
-            for ($t=1; $t <=$cols ; $t++) { 
+            for ($t=$cols; $t >= 1 ; $t--) { 
 
                 if (array_key_exists($i, $data['pixels']) and array_key_exists($t, $data['pixels'][$i])) {
 
                     unset($data['pixels'][$i][$t]);
-                   
-                    $data['pixels'][$i+1][$t] = $data['color'];
+                    if ($i+1 <= $lines) {
+                        $data['pixels'][$i+1][$t] = $data['color'];
+                    }else{
+                        $data['pixels'][$i][$t] = $data['color'];
+                    }
+                    
+                }
+            }
+        } 
+    }else{
+        for ($i=$lines; $i >=1 ; $i--) { 
+
+            for ($t=$cols; $t >= 1 ; $t--) { 
+
+                if (array_key_exists($i, $data['pixels']) and array_key_exists($t, $data['pixels'][$i])) {
+
+                    unset($data['pixels'][$i][$t]);
+                    if ($t+1 <= $cols) {
+                       $data['pixels'][$i][$t+1] = $data['color'];
+                    }else{
+                        $data['pixels'][$i][$t] = $data['color'];
+                    }
+
                 }
             }
         } 
@@ -100,7 +129,7 @@ if (isset($_GET['posicao'])) {
 
 }
 
-var_dump($data['pixels']);
+// var_dump($data['pixels']);
 
 
 ob_start();
