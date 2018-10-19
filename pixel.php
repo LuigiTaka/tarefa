@@ -5,18 +5,25 @@ $page->title = 'Pixel tool';
 $page->css->jqueryui = true;
 
 $lines = isset($_GET['lines'])?$_GET['lines']:8;
-$cols = isset($_GET['cols'])?$_GET['cols']:8;
+$cols = isset($_GET['cols'])?$_GET['cols']:15;
 $total = $lines * $cols;
+
 $colors = ['Black','Red','Green','Blue'];
+$tools = ['Pix','Line','Area'];
 
 $data = [
     'color' => 'Black',
     'pixels' => [],
-    'zoom' => 0
+    'zoom' => 0,
+    'tool' => 'Pix'
 ];
 
 if(isset($_GET['data'])){
     $data = json_decode($_GET['data'],TRUE);
+}
+
+if(isset($_GET['tool'])){
+    $data['tool'] = $_GET['tool'];
 }
 
 if(isset($_GET['color'])){
@@ -143,8 +150,8 @@ ob_start();
     <button name="zoom" value="in"><span class="ui-button ui-icon ui-icon-circle-plus"></span></button>
     <button name="zoom" value="out"><span class="ui-button ui-icon ui-icon-circle-minus"></span></button>
 
-    Nº de linhas: <input type="number" name="lines" value="<?php echo $lines; ?>">
-    Nº de Colunas: <input type="number" name="cols" value="<?php echo $cols ?>">
+    <input type="number" name="lines" value="<?php echo $lines; ?>">
+    x <input type="number" name="cols" value="<?php echo $cols ?>">
 
     <select name="color">
         <?php foreach($colors as $c) : ?>
@@ -152,9 +159,11 @@ ob_start();
         <?php endforeach; ?>
     </select>
 
-  
-   
-    <?php echo $controle; ?> pixels de:  <?php echo $total ; ?>
+    <select name="tool">
+        <?php foreach($tools as $t) : ?>
+            <option value="<?php echo $t; ?>" <?php if($t==$data['tool']) echo 'selected'; ?>><?php echo $t ?></option>
+        <?php endforeach; ?>
+    </select>
 
     <hr/>
 
@@ -186,9 +195,11 @@ ob_start();
 
         <?php endfor; ?>
 
+
     </table>
 
     <div style="display:inline-block; vertical-align: text-top;">
+
         <table id="moveControls">
             <tr>
                 <td></td>
@@ -209,9 +220,15 @@ ob_start();
 
     </div>
 
+
     <input type="hidden" name="data" value='<?php echo json_encode($data) ?>' />
 
 </form>
+
+<small>
+    <?php echo $controle; ?> pixels de:  <?php echo $total ; ?>
+</small>
+
 
 <?php $cell_size = 30 + ($data['zoom']*5) ?>
 
