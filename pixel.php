@@ -58,12 +58,12 @@ if (isset($_GET['posicao'])) {
             for ($t=1; $t <=$cols ; $t++) { 
 
                 if (array_key_exists($i, $data['pixels']) and array_key_exists($t, $data['pixels'][$i])) {
-
+                    $color = $data['pixels'][$i][$t];
                     unset($data['pixels'][$i][$t]);
-                    if ($i-1 != 0) {
-                        $data['pixels'][$i-1][$t] = $data['color'];
+                    if ($i-1 != 0 and empty($data['pixels'][$i-1][$t])) {
+                        $data['pixels'][$i-1][$t] = $color;
                     }else{
-                       $data['pixels'][$i][$t]= $data['color'];
+                       $data['pixels'][$i][$t]= $color;
                     }
                     
                 }
@@ -79,12 +79,12 @@ if (isset($_GET['posicao'])) {
             for ($t=1; $t <=$cols ; $t++) { 
 
                 if (array_key_exists($i, $data['pixels']) and array_key_exists($t, $data['pixels'][$i])) {
-
+                    $color = $data['pixels'][$i][$t];
                     unset($data['pixels'][$i][$t]);
-                    if ($t-1 != 0) {
-                        $data['pixels'][$i][$t-1] = $data['color'];
+                    if ($t-1 != 0 and empty($data['pixels'][$i][$t-1])) {
+                        $data['pixels'][$i][$t-1] = $color;
                     }else{
-                        $data['pixels'][$i][$t] = $data['color'];
+                        $data['pixels'][$i][$t] = $color;
                     }
                     
                 }
@@ -97,12 +97,12 @@ if (isset($_GET['posicao'])) {
             for ($t=$cols; $t >= 1 ; $t--) { 
 
                 if (array_key_exists($i, $data['pixels']) and array_key_exists($t, $data['pixels'][$i])) {
-
+                    $color = $data['pixels'][$i][$t];
                     unset($data['pixels'][$i][$t]);
-                    if ($i+1 <= $lines) {
-                        $data['pixels'][$i+1][$t] = $data['color'];
+                    if ($i+1 <= $lines and empty($data['pixels'][$i+1][$t])) {
+                        $data['pixels'][$i+1][$t] = $color;
                     }else{
-                        $data['pixels'][$i][$t] = $data['color'];
+                        $data['pixels'][$i][$t] = $color;
                     }
                     
                 }
@@ -114,18 +114,21 @@ if (isset($_GET['posicao'])) {
             for ($t=$cols; $t >= 1 ; $t--) { 
 
                 if (array_key_exists($i, $data['pixels']) and array_key_exists($t, $data['pixels'][$i])) {
-
+                    $color = $data['pixels'][$i][$t];
                     unset($data['pixels'][$i][$t]);
-                    if ($t+1 <= $cols) {
-                       $data['pixels'][$i][$t+1] = $data['color'];
+                    if ($t+1 <= $cols and empty($data['pixels'][$i][$t+1])) {
+                       $data['pixels'][$i][$t+1] = $color;
                     }else{
-                        $data['pixels'][$i][$t] = $data['color'];
+                        $data['pixels'][$i][$t] = $color;
                     }
 
                 }
             }
         } 
     }
+
+
+
 
 }
 
