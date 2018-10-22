@@ -41,7 +41,34 @@ if(isset($_GET['click'])){
     } else {
         unset($data['pixels'][$l][$c]);
     }
+    if (isset($_GET['tool'])) {
+
+    if($_GET['tool'] == 'Line'){
+
+        echo $l;
+        $teste = 0;
+        for ($i=$l; $i <= $lines ; $i++) {  
+            for ($t=$c; $t <=$cols ; $t++) { 
+                if (array_key_exists($i, $data['pixels']) and !array_key_exists($t, $data['pixels'][$i])) {
+                   $data['pixels'][$i][$t] = $data['color'];
+            
+                }
+            }
+            
+
+        }
+
+
+        }elseif ($_GET['tool'] == 'Area') {
+            echo "Area";
+        }
+    
+
+    }
+
+
 }
+var_dump($data['pixels']);
 
 $controle = 0;
 for ($j=1; $j <= $lines ; $j++) { 
@@ -52,10 +79,6 @@ for ($j=1; $j <= $lines ; $j++) {
        }
       
 }
-
-//var_dump($data['pixels']);
-
-
 
 if (isset($_GET['posicao'])) {
     if ($_GET['posicao'] == 'up') {
@@ -133,13 +156,10 @@ if (isset($_GET['posicao'])) {
             }
         } 
     }
-
-
-
-
 }
 
-// var_dump($data['pixels']);
+
+
 
 
 ob_start();
