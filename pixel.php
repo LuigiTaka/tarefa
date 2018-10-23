@@ -47,23 +47,24 @@ if(isset($_GET['click'])){
 if (isset($_GET['tool'])) {
     if ($_GET['tool'] == "Line") {
         $tool[] = [$l,$c];
-        
-        for ($i=1; $i <= $lines ; $i++) {  
+      
+        for ($linha=1; $linha <= $lines ; $linha++) {  
 
-             for ($t=1; $t <=$cols ; $t++) { 
-                 if (array_key_exists($i, $data['pixels']) and !array_key_exists($t, $data['pixels'][$i])) {
-                   for ($s=$i; $s <= $tool[0][1] ; $s++) { 
-                     $data['pixels'][$i][$s] = $data['color'];
-                   }
-
-            
+             for ($coluna=1; $coluna <=$cols ; $coluna++) { 
+                if (array_key_exists($linha, $data['pixels']) and array_key_exists($coluna, $data['pixels'][$linha])) {
+                    echo "Sim";
+                    for ($i=$coluna; $i <= $tool[0][1] ; $i++) { 
+                        echo $linha;
+                        if (!array_key_exists($i, $data['pixels'][$linha])) {
+                            $data['pixels'][$tool[0][0]][$i] = $data['color'];
+                        }
+                    }
                 }
-
-             }
+            }      
         }
     }
 }
-
+      
 $controle = 0;
 for ($j=1; $j <= $lines ; $j++) { 
 
