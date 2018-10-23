@@ -10,7 +10,7 @@ $total = $lines * $cols;
 
 $colors = ['Black','Red','Green','Blue'];
 $tools = ['Pix','Line','Area'];
-
+$tool = [];
 $data = [
     'color' => 'Black',
     'pixels' => [],
@@ -41,34 +41,28 @@ if(isset($_GET['click'])){
     } else {
         unset($data['pixels'][$l][$c]);
     }
-    if (isset($_GET['tool'])) {
+    
+}
 
-    if($_GET['tool'] == 'Line'){
+if (isset($_GET['tool'])) {
+    if ($_GET['tool'] == "Line") {
+        $tool[] = [$l,$c];
+        
+        for ($i=1; $i <= $lines ; $i++) {  
 
-        echo $l;
-        $teste = 0;
-        for ($i=$l; $i <= $lines ; $i++) {  
-            for ($t=$c; $t <=$cols ; $t++) { 
-                if (array_key_exists($i, $data['pixels']) and !array_key_exists($t, $data['pixels'][$i])) {
-                   $data['pixels'][$i][$t] = $data['color'];
+             for ($t=1; $t <=$cols ; $t++) { 
+                 if (array_key_exists($i, $data['pixels']) and !array_key_exists($t, $data['pixels'][$i])) {
+                   for ($s=$i; $s <= $tool[0][1] ; $s++) { 
+                     $data['pixels'][$i][$s] = $data['color'];
+                   }
+
             
                 }
-            }
-            
 
+             }
         }
-
-
-        }elseif ($_GET['tool'] == 'Area') {
-            echo "Area";
-        }
-    
-
     }
-
-
 }
-var_dump($data['pixels']);
 
 $controle = 0;
 for ($j=1; $j <= $lines ; $j++) { 
@@ -158,7 +152,9 @@ if (isset($_GET['posicao'])) {
     }
 }
 
-
+echo "<pre>";
+var_dump($tool);
+echo "</pre>";
 
 
 
