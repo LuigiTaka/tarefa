@@ -54,22 +54,28 @@ if (isset($_GET['tool'])) {
 
              for ($coluna=1; $coluna <=$cols ; $coluna++) { 
                 if (array_key_exists($linha, $data['pixels']) and array_key_exists($coluna, $data['pixels'][$linha])) {
-                    if ($tool[0][1] <= $coluna) {
+                    if ($tool[0][1] < $coluna) {
 
                         for ($i=$coluna; $i > $tool[0][1] ; $i--) { 
                             if (!array_key_exists($i, $data['pixels'][$linha])) {
-                                echo "direita-esquerda ";
+                                
                                 $data['pixels'][$tool[0][0]][$i] = $data['color'];
+                               
+
                             }
+                             
                         }
                     }elseif ($tool[0][1] > $coluna) {
                         for ($i=$coluna; $i <= $tool[0][1] ; $i++) { 
-                            echo "esquerda-direita ";
+                            
                             if (!array_key_exists($i, $data['pixels'][$linha])) {
                                 $data['pixels'][$tool[0][0]][$i] = $data['color'];
+
                             }
+                        
                         }
                     }
+                    
                     
                 }
             }      
