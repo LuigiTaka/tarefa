@@ -48,12 +48,11 @@ if (isset($_GET['tool'])) {
     $tool[] = [$l,$c];
     if ($_GET['tool'] == "Line") {
         
-        
-
         for ($linha=1; $linha <= $lines ; $linha++) {  
 
              for ($coluna=1; $coluna <=$cols ; $coluna++) { 
                 if (array_key_exists($linha, $data['pixels']) and array_key_exists($coluna, $data['pixels'][$linha])) {
+                    #Estrutura pra linhas
                     if ($tool[0][1] < $coluna) {
 
                         for ($i=$coluna; $i > $tool[0][1] ; $i--) { 
@@ -65,6 +64,7 @@ if (isset($_GET['tool'])) {
                             }
                              
                         }
+
                     }elseif ($tool[0][1] > $coluna) {
                         for ($i=$coluna; $i <= $tool[0][1] ; $i++) { 
                             
@@ -74,14 +74,27 @@ if (isset($_GET['tool'])) {
                             }
                         
                         }
+
+                    }elseif ($coluna == $tool[0][1] and $linha < $tool[0][0]) {
+                        for ($i=$linha; $i < $tool[0][0] ; $i++) { 
+                             $data['pixels'][$i][$coluna] = $data['color'];
+                        }
+                    }elseif ($coluna == $tool[0][1] and $linha > $tool[0][0]) {
+
+                        for ($i=$linha; $i > $tool[0][0] ; $i--) { 
+                             $data['pixels'][$i][$coluna] = $data['color'];
+                        }
                     }
-                    
-                    
+         
                 }
-            }      
-        }
+            } #Fim do FOR $coluna     
+        } # Fim do FOR $linha
+     
+
+     #fim da LINHA
     }
 }
+
       
 $controle = 0;
 for ($j=1; $j <= $lines ; $j++) { 
@@ -171,9 +184,6 @@ if (isset($_GET['posicao'])) {
     }
 }
 
-echo "<pre>";
-var_dump($tool);
-echo "</pre>";
 
 
 
