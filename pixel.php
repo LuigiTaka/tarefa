@@ -41,75 +41,74 @@ if(isset($_GET['click'])){
     } else {
         unset($data['pixels'][$l][$c]);
     }
+
+    if (isset($_GET['tool'])) {
+        $tool[] = [$l,$c];
+            if ($_GET['tool'] == "Line") {
+            
+                for ($linha=1; $linha <= $lines ; $linha++) {  
+
+                     for ($coluna=1; $coluna <=$cols ; $coluna++) { 
+                        if (array_key_exists($linha, $data['pixels']) and array_key_exists($coluna, $data['pixels'][$linha])) {
+                  
+                            if ($tool[0][1] < $coluna) {
+
+                                for ($i=$coluna; $i > $tool[0][1] ; $i--) { 
+                                    if (!array_key_exists($i, $data['pixels'][$linha])) {
+                                        
+                                        $data['pixels'][$tool[0][0]][$i] = $data['color'];
+                                       
+                                    }
+                                     
+                                }
+
+                            }elseif ($tool[0][1] > $coluna) {
+                                for ($i=$coluna; $i <= $tool[0][1] ; $i++) { 
+                                    
+                                    if (!array_key_exists($i, $data['pixels'][$linha])) {
+                                        $data['pixels'][$tool[0][0]][$i] = $data['color'];
+
+                                    }
+                                
+                                }
+
+                            }elseif ($coluna == $tool[0][1] and $linha < $tool[0][0]) {
+                                for ($i=$linha; $i < $tool[0][0] ; $i++) { 
+                                     $data['pixels'][$i][$coluna] = $data['color'];
+                                }
+                            }elseif ($coluna == $tool[0][1] and $linha > $tool[0][0]) {
+
+                                for ($i=$linha; $i > $tool[0][0] ; $i--) { 
+                                     $data['pixels'][$i][$coluna] = $data['color'];
+                                }
+                            }
+                 
+                        }
+                    }      
+                } 
+
+        }elseif ($_GET['tool'] == 'Area') {
+            for ($linha=1; $linha <= $lines ; $linha++) {  
+
+                for ($coluna=1; $coluna <=$cols ; $coluna++) { 
+                    if (array_key_exists($linha, $data['pixels']) and array_key_exists($coluna, $data['pixels'][$linha])) {
+                        for ($i=$linha; $i <= $tool[0][0] ; $i++) { 
+                            
+                            for ($j=$coluna; $j <= $tool[0][1] ; $j++) { 
+                                $data['pixels'][$i][$j] = 'red';
+                            }
+                        }
+                    }
+
+                }
+            }
+
+        }
+    }
     
 }
 
-if (isset($_GET['tool'])) {
-    $tool[] = [$l,$c];
-    if ($_GET['tool'] == "Line") {
-        
-        for ($linha=1; $linha <= $lines ; $linha++) {  
 
-             for ($coluna=1; $coluna <=$cols ; $coluna++) { 
-                if (array_key_exists($linha, $data['pixels']) and array_key_exists($coluna, $data['pixels'][$linha])) {
-                    #Estrutura pra linhas
-                    if ($tool[0][1] < $coluna) {
-
-                        for ($i=$coluna; $i > $tool[0][1] ; $i--) { 
-                            if (!array_key_exists($i, $data['pixels'][$linha])) {
-                                
-                                $data['pixels'][$tool[0][0]][$i] = $data['color'];
-                               
-
-                            }
-                             
-                        }
-
-                    }elseif ($tool[0][1] > $coluna) {
-                        for ($i=$coluna; $i <= $tool[0][1] ; $i++) { 
-                            
-                            if (!array_key_exists($i, $data['pixels'][$linha])) {
-                                $data['pixels'][$tool[0][0]][$i] = $data['color'];
-
-                            }
-                        
-                        }
-
-                    }elseif ($coluna == $tool[0][1] and $linha < $tool[0][0]) {
-                        for ($i=$linha; $i < $tool[0][0] ; $i++) { 
-                             $data['pixels'][$i][$coluna] = $data['color'];
-                        }
-                    }elseif ($coluna == $tool[0][1] and $linha > $tool[0][0]) {
-
-                        for ($i=$linha; $i > $tool[0][0] ; $i--) { 
-                             $data['pixels'][$i][$coluna] = $data['color'];
-                        }
-                    }
-         
-                }
-            } #Fim do FOR $coluna     
-        } # Fim do FOR $linha
-     
-
-     #fim da LINHA
-    }elseif ($_GET['tool'] == 'Area') {
-        for ($linha=1; $linha <= $lines ; $linha++) {  
-
-            for ($coluna=1; $coluna <=$cols ; $coluna++) { 
-                if (array_key_exists($linha, $data['pixels']) and array_key_exists($coluna, $data['pixels'][$linha])) {
-                    for ($i=$linha; $i <= $tool[0][0] ; $i++) { 
-                        
-                        for ($j=$coluna; $j <= $tool[0][1] ; $j++) { 
-                            $data['pixels'][$i][$j] = 'red';
-                        }
-                    }
-                }
-
-            }
-        }
-
-    }
-}
 
       
 $controle = 0;
