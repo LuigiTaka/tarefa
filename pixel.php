@@ -92,6 +92,22 @@ if (isset($_GET['tool'])) {
      
 
      #fim da LINHA
+    }elseif ($_GET['tool'] == 'Area') {
+        for ($linha=1; $linha <= $lines ; $linha++) {  
+
+            for ($coluna=1; $coluna <=$cols ; $coluna++) { 
+                if (array_key_exists($linha, $data['pixels']) and array_key_exists($coluna, $data['pixels'][$linha])) {
+                    for ($i=$linha; $i <= $tool[0][0] ; $i++) { 
+                        
+                        for ($j=$coluna; $j <= $tool[0][1] ; $j++) { 
+                            $data['pixels'][$i][$j] = 'red';
+                        }
+                    }
+                }
+
+            }
+        }
+
     }
 }
 
