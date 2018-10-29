@@ -1,5 +1,17 @@
 <?php
 require_once(__DIR__.'/utils.php');
+
+function array_combine_($keys, $values)
+{
+    $result = array();
+    foreach ($keys as $i => $k) {
+        $result[$k][] = $values[$i];
+    }
+    array_walk($result, create_function('&$v', '$v = (count($v) == 1)? array_pop($v): $v;'));
+    return    $result;
+}
+
+
 $page = new Page();
 $page->title = 'Pixel tool';
 $page->css->jqueryui = true;
@@ -7,6 +19,7 @@ $page->css->jqueryui = true;
 $lines = isset($_GET['lines'])?$_GET['lines']:8;
 $cols = isset($_GET['cols'])?$_GET['cols']:15;
 $total = $lines * $cols;
+$teste = [];
 
 $colors = ['Black','Red','Green','Blue'];
 $tools = ['Pix','Line','Area'];
@@ -17,6 +30,7 @@ $data = [
     'zoom' => 0,
     'tool' => 'Pix'
 ];
+
 
 if(isset($_GET['data'])){
     $data = json_decode($_GET['data'],TRUE);
@@ -108,17 +122,60 @@ if(isset($_GET['click'])){
     
 }
 
+if (!empty($_GET['codigo'])) {
 
+    $f = base_convert($_GET['codigo'], 36, 11);
+    echo $f;
+    $coisa  = explode('a', $f,3);
+    $retira = array_pop($coisa);
+    $lines = $coisa[0];
+    $cols = $coisa[1];
+    $linhas = [];
+    $colunas = [];
+    $clicked = str_replace('a', '-', $retira);
+    $quadrados = (explode('-', $clicked));
+    foreach ($quadrados as $key => $value) {
+       if ($key%2 != 0) {
+           $linhas[] = $value; 
+       }elseif ($key%2 == 0) {
+           $colunas[] = $value;
+       }
+    }
 
-      
+    var_dump($linhas);
+    var_dump($colunas);
+    var_dump($linhas);
+    var_dump($colunas);
+    $k = array_combine_($linhas,$colunas);
+    var_dump($k);
+    foreach ($k as $key => $value) {
+        $data['pixels'][$value][$key] = $data['color'];
+    }
+    
+}
+
 $controle = 0;
 for ($j=1; $j <= $lines ; $j++) { 
 
     if (array_key_exists($j, $data['pixels'])) {
-        
+       
         $controle +=  count($data['pixels'][$j]);
-       }
+    }
       
+}
+
+$index = 0;
+for ($i=1; $i <=$lines ; $i++) { 
+      
+    for ($x=1; $x <=$cols ; $x++) { 
+        if (array_key_exists($i, $data['pixels']) and array_key_exists($x, $data['pixels'][$i])) {
+            $index++;
+            
+            $teste[$index] = ['A'.$i,'A'.$x];
+        }
+
+    }
+   
 }
 
 if (isset($_GET['posicao'])) {
@@ -199,7 +256,26 @@ if (isset($_GET['posicao'])) {
     }
 }
 
+echo "<pre>";
+var_dump($teste);
+echo "</pre>";
 
+$cd = $lines."A".$cols;
+
+$conta = count($teste);       
+foreach ($teste as $key) {
+    foreach ( $key as $f => $t) {
+      $cd =  $cd . $t;
+    
+    }
+}
+
+$certo =  base_convert($cd,11,36);
+
+$converte = base_convert($certo, 36, 11);
+//echo $converte;
+
+echo $certo;
 
 
 ob_start();
@@ -212,6 +288,8 @@ ob_start();
 
     <input type="number" name="lines" value="<?php echo $lines; ?>">
     x <input type="number" name="cols" value="<?php echo $cols ?>">
+
+    <input type="text" name="codigo" placeholder="Digite o cogido aqui...">
 
     <select name="color">
         <?php foreach($colors as $c) : ?>
