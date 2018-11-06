@@ -271,12 +271,6 @@ foreach ($teste as $key) {
     }
 }
 
-
-
-
-
-
-
 ob_start();
 ?>
 
@@ -302,10 +296,11 @@ ob_start();
             <?php endforeach; ?>
         </select>
 
-      Pixels aleatórios : <input type="number" name="vezes" max="<?php echo $cols*$lines ?>">
+        Pixels aleatórios : <input type="number" name="vezes" max="<?php echo $cols*$lines ?>">
 
-        Código para compartilhar : <input type="text" disabled="" value="<?php echo $cd; ?>">
-
+        Código para compartilhar : <input type="text"  value="<?php echo $cd; ?>" id="myInput"> 
+        <button onclick="myFunction()" onmouseout="outFunc()">Copiar código</button>
+   
         Insira o código : <input type="text" name="codigo" placeholder="Digite o cogido..." class="codigo">
         
         <hr/>
@@ -410,16 +405,24 @@ ob_start();
         width: 50px;
     }
 
-
     .codigo {
         width: 100px;
     }
 
 
-
-
-}
 </style>
+
+<script>
+function myFunction() {
+  var copyText = document.getElementById("myInput");
+  copyText.select();
+  document.execCommand("copy");
+  
+  var tooltip = document.getElementById("myTooltip");
+  tooltip.innerHTML = "Copied: " + copyText.value;
+}
+
+</script>
 <?php 
 $page->content = ob_get_clean();
 echo $page;
