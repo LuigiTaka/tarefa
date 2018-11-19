@@ -1,15 +1,6 @@
 <?php
 require_once(__DIR__.'/utils.php');
 
-function array_combine_($keys, $values)
-{
-    $result = array();
-    foreach ($keys as $i => $k) {
-        $result[$k][] = $values[$i];
-    }
-    array_walk($result, create_function('&$v', '$v = (count($v) == 1)? array_pop($v): $v;'));
-    return    $result;
-}
 
 
 $page = new Page();
@@ -124,16 +115,17 @@ if(isset($_GET['click'])){
 
 if (!empty($_GET['codigo'])) {
 
-    $f = base_convert($_GET['codigo'], 36, 11);
-    echo $f;
-    $coisa  = explode('a', $f,3);
-    $retira = array_pop($coisa);
+    $f = $_GET['codigo'];
+
+    $coisa  = explode('A', $f,3);
+    $quadrados =array_pop($coisa);
     $lines = $coisa[0];
     $cols = $coisa[1];
+    $quadrados = explode('A', $quadrados);
+
+
     $linhas = [];
     $colunas = [];
-    $clicked = str_replace('a', '-', $retira);
-    $quadrados = (explode('-', $clicked));
     foreach ($quadrados as $key => $value) {
        if ($key%2 != 0) {
            $linhas[] = $value; 
@@ -142,17 +134,28 @@ if (!empty($_GET['codigo'])) {
        }
     }
 
-    var_dump($linhas);
-    var_dump($colunas);
-    var_dump($linhas);
-    var_dump($colunas);
-    $k = array_combine_($linhas,$colunas);
-    var_dump($k);
+    // echo "<p>LINHAS :".var_dump($linhas)."</p>";
+    // echo "<br>";
+    // echo "<p>COLUNAS :".var_dump($colunas)."</p>";
+
+     $k = array_combine($linhas,$colunas);
+
+
+    //var_dump($k);
     foreach ($k as $key => $value) {
         $data['pixels'][$value][$key] = $data['color'];
     }
     
 }
+
+
+if (!empty($_GET['vezes'])) {
+    $vezes = $_GET['vezes'];
+    for ($i=1; $i <= $vezes ; $i++) { 
+        $data['pixels'][mt_rand(1,$lines)][mt_rand(1,$cols)] = $colors[mt_rand(0,count($colors)-1)];
+    }
+}
+
 
 $controle = 0;
 for ($j=1; $j <= $lines ; $j++) { 
@@ -256,9 +259,7 @@ if (isset($_GET['posicao'])) {
     }
 }
 
-echo "<pre>";
-var_dump($teste);
-echo "</pre>";
+
 
 $cd = $lines."A".$cols;
 
@@ -270,69 +271,68 @@ foreach ($teste as $key) {
     }
 }
 
-$certo =  base_convert($cd,11,36);
-
-$converte = base_convert($certo, 36, 11);
-//echo $converte;
-
-echo $certo;
-
-
 ob_start();
 ?>
 
 <form method="GET">
+    <div class="formulario">
+        <button name="zoom" value="in"><span class="ui-button ui-icon ui-icon-circle-plus"></span></button>
+        <button name="zoom" value="out"><span class="ui-button ui-icon ui-icon-circle-minus"></span></button>
 
-    <button name="zoom" value="in"><span class="ui-button ui-icon ui-icon-circle-plus"></span></button>
-    <button name="zoom" value="out"><span class="ui-button ui-icon ui-icon-circle-minus"></span></button>
+        <input type="number" name="lines" value="<?php echo $lines; ?>">
+        x <input type="number" name="cols" value="<?php echo $cols ?>">
 
-    <input type="number" name="lines" value="<?php echo $lines; ?>">
-    x <input type="number" name="cols" value="<?php echo $cols ?>">
+        
 
-    <input type="text" name="codigo" placeholder="Digite o cogido aqui...">
+        <select name="color">
+            <?php foreach($colors as $c) : ?>
+                <option value="<?php echo $c; ?>" <?php if($c==$data['color']) echo 'selected'; ?>><?php echo $c ?></option>
+            <?php endforeach; ?>
+        </select>
 
-    <select name="color">
-        <?php foreach($colors as $c) : ?>
-            <option value="<?php echo $c; ?>" <?php if($c==$data['color']) echo 'selected'; ?>><?php echo $c ?></option>
-        <?php endforeach; ?>
-    </select>
+        <select name="tool">
+            <?php foreach($tools as $t) : ?>
+                <option value="<?php echo $t; ?>" <?php if($t==$data['tool']) echo 'selected'; ?>><?php echo $t ?></option>
+            <?php endforeach; ?>
+        </select>
 
-    <select name="tool">
-        <?php foreach($tools as $t) : ?>
-            <option value="<?php echo $t; ?>" <?php if($t==$data['tool']) echo 'selected'; ?>><?php echo $t ?></option>
-        <?php endforeach; ?>
-    </select>
+        Pixels aleatórios : <input type="number" name="vezes" max="<?php echo $cols*$lines ?>">
 
-    <hr/>
+        Código para compartilhar : <input type="text"  value="<?php echo $cd; ?>" id="myInput"> 
+        <button onclick="myFunction()" onmouseout="outFunc()">Copiar código</button>
+   
+        Insira o código : <input type="text" name="codigo" placeholder="Digite o cogido..." class="codigo">
+        
+        <hr/>
 
-    <table border="1" style="display:inline-block;vertical-align:text-top;">
-
-        <tr>
-            <th>\</th>
-            <?php for ($t=1; $t <= $cols; $t++) : ?>
-                <th class="id" ><?php if ($cols <= 26) {
-                    echo chr(64+$t);
-                }else{
-                    echo $t;
-                } ?> </th>
-            <?php endfor; ?>
-        </tr>
-
-        <?php for($i=1;$i<=$lines;$i++) : ?>
+        <table border="1" style="display:inline-block;vertical-align:text-top;">
 
             <tr>
-                <th class="id" scope="row"><?php echo $i; ?></th> 
-                <?php for($j=1;$j<=$cols;$j++) : ?>
-
-                    <td class="<?php echo isset($data['pixels'][$i][$j]) ? $data['pixels'][$i][$j] : ''; ?>">
-                        <button name="click" value="<?php echo $i.'-'.$j ?>">&nbsp;</button>
-                    </td>
-
+                <th>\</th>
+                <?php for ($t=1; $t <= $cols; $t++) : ?>
+                    <th class="id" ><?php if ($cols <= 26) {
+                        echo chr(64+$t);
+                    }else{
+                        echo $t;
+                    } ?> </th>
                 <?php endfor; ?>
             </tr>
 
-        <?php endfor; ?>
+            <?php for($i=1;$i<=$lines;$i++) : ?>
 
+                <tr>
+                    <th class="id" scope="row"><?php echo $i; ?></th> 
+                    <?php for($j=1;$j<=$cols;$j++) : ?>
+
+                        <td class="<?php echo isset($data['pixels'][$i][$j]) ? $data['pixels'][$i][$j] : ''; ?>">
+                            <button name="click" value="<?php echo $i.'-'.$j ?>">&nbsp;</button>
+                        </td>
+
+                    <?php endfor; ?>
+                </tr>
+
+            <?php endfor; ?>
+    </div>
 
     </table>
 
@@ -362,7 +362,7 @@ ob_start();
     <input type="hidden" name="data" value='<?php echo json_encode($data) ?>' />
 
 </form>
-
+<div class="minus icon"></div>
 <small>
     <?php echo $controle; ?> pixels de:  <?php echo $total ; ?>
 </small>
@@ -405,11 +405,24 @@ ob_start();
         width: 50px;
     }
 
-    #moveControls button:hover{
-        background:lightblue;
+    .codigo {
+        width: 100px;
     }
 
+
 </style>
+
+<script>
+function myFunction() {
+  var copyText = document.getElementById("myInput");
+  copyText.select();
+  document.execCommand("copy");
+  
+  var tooltip = document.getElementById("myTooltip");
+  tooltip.innerHTML = "Copied: " + copyText.value;
+}
+
+</script>
 <?php 
 $page->content = ob_get_clean();
 echo $page;
