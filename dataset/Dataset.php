@@ -39,16 +39,18 @@ class Dataset{
     function sort($coluna,$modo){
 
         if($modo=='ASC'){
-            $sorter = function($a,$b){
+            $sorter = function($a,$b) use ($coluna){
                 return $a[$coluna] > $b[$coluna];
             };
         } else {
-            $sorter = function($a,$b){
+            $sorter = function($a,$b) use ($coluna){
                 return $a[$coluna] < $b[$coluna];
             };
         }
 
-        return uasort($this->items,$sorter);
+        uasort($this->items,$sorter);
+
+        return $this;
     }
 
 
@@ -87,6 +89,23 @@ class Dataset{
        return json_encode($this->items);
     }
 
+
+
+}
+
+
+class EqFilter{      
+
+    function __invoke($chave,$valor){
+        var_dump($valor);
+        $compara = function($item) use ($chave,$valor){
+            return $item[$chave] == $item[$valor];
+        };
+
+        return $compara;
+    }    
+
+ 
 
 
 }
