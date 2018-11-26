@@ -16,7 +16,7 @@ class Dataset{
 
     function filter(callable $anonimo = null){
     	$filtrado = [];
-  
+
         var_dump($anonimo);
     	if(!empty($anonimo)){
     		$caminha = (array_map($anonimo, $this->toArray()));
@@ -97,11 +97,11 @@ class Dataset{
 
 
 class EqFilter{      
-
-    function __invoke($chave){
+ 
+    function __invoke($chave,$valor){
         
-        $compara = function($item) use ($chave){
-            return $item[$chave] = $chave;
+        $compara = function($item) use ($chave,$valor){
+            return $item[$chave] = $valor;
         };
 
         return $compara;
@@ -111,10 +111,10 @@ class EqFilter{
 }
 
 class GtFilter{
-    function __invoke($chave){
+    function __invoke($chave,$valor){
         
-        $compara = function($item) use ($chave){
-            return $item[$chave] > $chave;
+        $compara = function($item) use ($chave,$valor){
+            return $item[$chave] > $valor;
         };
 
         return $compara;
@@ -122,10 +122,10 @@ class GtFilter{
 }
 
 class LtFilter{
-    function __invoke($chave){
+    function __invoke($chave,$valor){
         
-        $compara = function($item) use ($chave){
-            return $item[$chave] < $chave;
+        $compara = function($item) use ($chave,$valor){
+            return $item[$chave] < $valor;
         };
 
         return $compara;
