@@ -14,8 +14,10 @@ class Dataset{
         return $this->items;
     }
 
-    function filter(Closure $anonimo = null){
+    function filter(callable $anonimo = null){
     	$filtrado = [];
+  
+        var_dump($anonimo);
     	if(!empty($anonimo)){
     		$caminha = (array_map($anonimo, $this->toArray()));
     
@@ -96,18 +98,37 @@ class Dataset{
 
 class EqFilter{      
 
-    function __invoke($chave,$valor){
-        var_dump($valor);
-        $compara = function($item) use ($chave,$valor){
-            return $item[$chave] == $item[$valor];
+    function __invoke($chave){
+        
+        $compara = function($item) use ($chave){
+            return $item[$chave] = $chave;
         };
 
         return $compara;
     }    
 
- 
-
 
 }
 
+class GtFilter{
+    function __invoke($chave){
+        
+        $compara = function($item) use ($chave){
+            return $item[$chave] > $chave;
+        };
+
+        return $compara;
+    }    
+}
+
+class LtFilter{
+    function __invoke($chave){
+        
+        $compara = function($item) use ($chave){
+            return $item[$chave] < $chave;
+        };
+
+        return $compara;
+    } 
+}
 
