@@ -96,10 +96,23 @@ class Dataset{
 }
 
 
-class EqFilter{      
- 
-    function __invoke($chave,$valor){
-        
+class EqFilter{     
+
+    var $chave;
+    var $valor;
+
+    function __construct(){
+        $this->chave = $chave;
+        $this->valor = $valor;
+    }
+
+
+    function __invoke(){
+        $valor = $this->valor;
+        $chave = $this->chave;
+
+        echo $chave;
+
         $compara = function($item) use ($chave,$valor){
             return $item[$chave] = $valor;
         };
@@ -111,8 +124,12 @@ class EqFilter{
 }
 
 class GtFilter{
-    function __invoke($chave,$valor){
-        
+
+
+
+    function __invoke(){
+
+        var_dump(func_get_args());
         $compara = function($item) use ($chave,$valor){
             return $item[$chave] > $valor;
         };
@@ -130,5 +147,42 @@ class LtFilter{
 
         return $compara;
     } 
+}
+
+
+class DatasetItem {
+
+    var $get;
+    var $func;
+
+    function get($get){
+        return  $this->get = $get;
+    }
+
+    function eq($valor){
+        $func = function($item) use ($valor){
+            return $item[$this->get] == $valor;
+        };
+
+        return $func;
+    }
+
+    function contains($valor){
+
+        $func = function($item) use ($valor){
+            return strstr($item[$this->get], $valor);
+        };
+
+        return $func;
+    }
+
+
+    function between($min,$max){
+        $func = function($item) use ($min,$max){
+            return $item[$this->get] >= $min && $item[$this->get] <= $max;
+        };
+
+        return $func;
+    }
 }
 
