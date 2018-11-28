@@ -101,7 +101,7 @@ class EqFilter{
     var $chave;
     var $valor;
 
-    function __construct(){
+    function __construct($chave,$valor){
         $this->chave = $chave;
         $this->valor = $valor;
     }
@@ -111,10 +111,8 @@ class EqFilter{
         $valor = $this->valor;
         $chave = $this->chave;
 
-        echo $chave;
-
-        $compara = function($item) use ($chave,$valor){
-            return $item[$chave] = $valor;
+        $compara = function(array $item) use ($chave,$valor){
+            return $item[$chave] == $valor;
         };
 
         return $compara;
@@ -125,28 +123,49 @@ class EqFilter{
 
 class GtFilter{
 
+    var $chave;
+    var $valor;
+
+    function __construct($chave,$valor){
+        $this->chave = $chave;
+        $this->valor = $valor;
+    }
 
 
     function __invoke(){
+        $valor = $this->valor;
+        $chave = $this->chave;
 
-        var_dump(func_get_args());
         $compara = function($item) use ($chave,$valor){
             return $item[$chave] > $valor;
         };
 
         return $compara;
     }    
+   
 }
 
 class LtFilter{
-    function __invoke($chave,$valor){
-        
+    var $chave;
+    var $valor;
+
+    function __construct($chave,$valor){
+        $this->chave = $chave;
+        $this->valor = $valor;
+    }
+
+
+    function __invoke(){
+        $valor = $this->valor;
+        $chave = $this->chave;
+
         $compara = function($item) use ($chave,$valor){
-            return $item[$chave] < $valor;
+            return $item[$chave]  < $valor;
         };
 
         return $compara;
-    } 
+    }    
+
 }
 
 
