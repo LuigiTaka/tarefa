@@ -106,22 +106,14 @@ class EqFilter{
         $this->valor = $valor;
     }
 
-
-    function __invoke(){
-        $valor = $this->valor;
-        $chave = $this->chave;
-
-        $compara = function(array $item) use ($chave,$valor){
-            return $item[$chave] == $valor;
-        };
-
-        return $compara;
-    }    
-
+    function __invoke(array $item){
+        return $item[$this->chave] == $this->valor;
+    }
 
 }
 
-class GtFilter{
+
+class GtFilter{     
 
     var $chave;
     var $valor;
@@ -131,21 +123,16 @@ class GtFilter{
         $this->valor = $valor;
     }
 
+    function __invoke(array $item){
+        return $item[$this->chave] > $this->valor;
+    }
 
-    function __invoke(){
-        $valor = $this->valor;
-        $chave = $this->chave;
-
-        $compara = function($item) use ($chave,$valor){
-            return $item[$chave] > $valor;
-        };
-
-        return $compara;
-    }    
-   
 }
 
-class LtFilter{
+
+
+class LtFilter{     
+
     var $chave;
     var $valor;
 
@@ -154,20 +141,11 @@ class LtFilter{
         $this->valor = $valor;
     }
 
-
-    function __invoke(){
-        $valor = $this->valor;
-        $chave = $this->chave;
-
-        $compara = function($item) use ($chave,$valor){
-            return $item[$chave]  < $valor;
-        };
-
-        return $compara;
-    }    
+    function __invoke(array $item){
+        return $item[$this->chave] < $this->valor;
+    }
 
 }
-
 
 class DatasetItem {
 
