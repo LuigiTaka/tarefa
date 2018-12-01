@@ -148,38 +148,24 @@ class LtFilter{
 }
 
 class DatasetItem {
+    var $chave;
 
-    var $get;
-    var $func;
-
-    function get($get){
-        return  $this->get = $get;
+    function get($chave){
+        return  $this->chave = $chave;
     }
 
     function eq($valor){
-        $func = function($item) use ($valor){
-            return $item[$this->get] == $valor;
-        };
-
-        return $func;
+        return $item[$this->chave] == $valor;
     }
 
+
     function contains($valor){
-
-        $func = function($item) use ($valor){
-            return strstr($item[$this->get], $valor);
-        };
-
-        return $func;
+        return strstr($item[$this->chave], $valor);
     }
 
 
     function between($min,$max){
-        $func = function($item) use ($min,$max){
-            return $item[$this->get] >= $min && $item[$this->get] <= $max;
-        };
-
-        return $func;
+        return ($item[$this->chave] >= $min && $item[$this->chave] <= $max);
     }
 }
 
